@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block content %}
+<article class="media content-section">
+    <div class="media-body">
+        {% include 'common/object_header.html' with object_name="project" %}
+        {% include 'projects/product_table.html' %}
+
+        <label class="d-block mb-3 mt-3">Kommentar</label>
+        <textarea class="form-control mb-3"
+                  style="height: 100pt; background-color:#FFF; resize: none;" readonly
+        >{{ object.comment }}</textarea>
+
+    </div>
+</article>
+{% endblock content %}

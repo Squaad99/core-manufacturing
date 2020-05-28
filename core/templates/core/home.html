@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div class="content-section">
+                <h1>Välkommen {{ user.first_name }}!</h1>
+                <small>Senast inloggad: {{ user.last_login|date:'Y F d H:i' }}</small>
+                <div class="border-top mt-3 mb-3"></div>
+
+                <h4>Användare</h4>
+                {% for name in users_names %}
+                    <h5>{{ name }}</h5>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="content-section">
+                <h1>Senaste händelser</h1>
+                <ul class="list-group" style="height:600px; overflow-y: scroll;">
+                    {% for event in events %}
+                        <li class="list-group-item">{{ event }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

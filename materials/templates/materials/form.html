@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'materials/material.css' %}">
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#scalable_cost_box').change(function() {
+            if(document.getElementById('scalable_cost_box').checked) {
+                $('.scalable_input, #class_a, label:contains("Enhetsnamn"), label:contains("Kostnad per enhet")').show();
+            } else {
+                $('.scalable_input, #class_a, label:contains("Enhetsnamn"), label:contains("Kostnad per enhet")').hide();
+            }
+        });
+    });
+</script>
+
+<div class="content-section">
+    {% if object %}
+    <h2 class="d-inline">Material - ändra</h2>
+    <a class="nav-item nav-link float-right" href="{% url 'material-detail' object.id %}">Tillbaka</a>
+    {% else %}
+    <h2 class="d-inline">Material - ny</h2>
+    <a class="nav-item nav-link float-right" href="{% url 'material-overview' %}">Tillbaka</a>
+    {% endif %}
+    <div class="border-top mt-3 mb-3"></div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            {% if object %}
+                <button type="submit" class="btn btn-primary">Spara</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary">Skapa</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+    var scalableCost = "{{object.scalable_cost}}"
+
+    if(scalableCost == "False") {
+        $('.scalable_input, #class_a, label:contains("Enhetsnamn"), label:contains("Kostnad per enhet")').hide();
+    }
+</script>
+
+{% endblock  %}

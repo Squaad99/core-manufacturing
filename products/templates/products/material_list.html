@@ -1,0 +1,44 @@
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/table.css' %}">
+
+<h5 class="d-inline">Material</h5>
+<a class="btn btn-success btn-sm d-inline ml-2 float-right" href="{% url 'material-for-product-add' object.id %}">Lägg till material</a>
+
+<table class="table table-bordered table-sm mt-3">
+    <thead>
+    <tr>
+        <th width="45%">Titel</th>
+        <th width="15%">Kostnad</th>
+        <th width="20%">Enhet</th>
+        <th width="15%">Antal</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for material in material_list %}
+    <tr>
+        <td width="45%">{{ material.material.title }}</td>
+        <td width="15%">{{ material.material.base_cost }}</td>
+        {% if material.material.scalable_cost %}
+        <td width="20%">{{ material.material.unit_label }} - {{ material.material.unit_cost }}</td>
+        <td width="15%">{{ material.units }}</td>
+        {% else %}
+        <td width="20%">-</td>
+        <td width="15%">-</td>
+        {% endif %}
+        <td class="delete-column">
+            <a class="cross-button" href="{% url 'material-for-product-delete' material.id %}">x</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Material kostnad: {{ total_material_cost }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+{% endblock content %}

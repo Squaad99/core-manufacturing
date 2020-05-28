@@ -1,0 +1,100 @@
+.table-content {
+    border: solid 2px gray;
+}
+
+tbody {
+    display:block;
+    height:100pt;
+    overflow-y:scroll;
+}
+
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+thead {
+    width: calc( 100% - 1em );
+}
+
+td {
+    border: 1px lightgray solid;
+    text-align: center;
+   
+}
+
+table {
+    width:100%;
+    border: solid Lightgrey 1px;
+}
+
+.table-header-div {
+    border-top: solid Lightgrey 1px;
+    border-left: solid Lightgrey 1px;
+    border-right: solid Lightgrey 1px;
+    padding-top: 10pt;
+    padding-left: 40pt;
+    padding-right: 40pt;
+}
+
+.table-header {
+    font-size: 18pt;
+}
+
+.header-table-row {
+    border-bottom: solid Lightgrey 1px;
+}
+
+.table-footer-div {
+    border-bottom: solid Lightgrey 1px;
+    border-left: solid Lightgrey 1px;
+    border-right: solid Lightgrey 1px;
+    padding: 0.5%;
+    position: relative;
+}
+
+.table-footer-label {
+    font-size: 12pt;
+    padding-left: 2%;
+}
+
+
+
+
+
+.plus-button {
+    display: inline-block;
+    font-size: 18pt;
+    padding: 3pt;
+    width: 20pt;
+    height: 20pt;
+    line-height: 11pt;
+    text-align: center;
+    background: green;
+    color: white;
+    border-radius: 4px;
+}
+
+.plus-button:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.cross-button {
+    display: inline-block;
+    font-size: 18pt;
+    padding: 3pt;
+    width: 15pt;
+    height: 15pt;
+    line-height: 4pt;
+    text-align: center;
+    background: red;
+    color: white;
+    border-radius: 4px;
+}
+
+.cross-button:hover {
+    text-decoration: none;
+    color: black;
+}

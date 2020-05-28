@@ -1,0 +1,25 @@
+<div class="article-metadata">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <label style="font-size: 24pt;">
+                    {{ object.title }}
+                </label>
+            </div>
+            <div class="col-5">
+                <label class="d-block" style="font-size: 10pt;">
+                    {{ object.created_by.first_name }} {{ object.created_by.last_name }}
+                </label>
+                <label class="d-block" style="font-size: 10pt;">
+                    Skapad: {{ object.created_at|date:'Y-m-d H:i' }}
+                </label>
+                <label class="d-block" style="font-size: 10pt;">
+                    Senast ändrad: {{ object.updated_at|date:'Y-m-d H:i' }}
+                </label>
+            </div>
+            <div class="col-1">
+                {% include 'common/object_links.html' with object_name=object_name %}
+            </div>
+        </div>
+    </div>
+</div>

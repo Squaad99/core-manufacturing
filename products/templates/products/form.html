@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+
+    {% if object %}
+        <h1 class="d-inline">Produkt - Ändra</h1>
+        <a class="nav-item nav-link float-right" href="{% url 'product-detail' object.id %}">Tillbaka</a>
+    {% else %}
+        <h1 class="d-inline">Produkt - Ändra</h1>
+        <a class="nav-item nav-link float-right" href="{% url 'product-overview' %}">Tillbaka</a>
+    {% endif %}
+    <div class="border-top mt-3 mb-3"></div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Skapa</button>
+        </div>
+    </form>
+</div>
+{% endblock  %}

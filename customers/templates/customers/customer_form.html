@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <h1 class="d-inline">Kund - ny</h1>
+    {% if object %}
+        <a class="nav-item nav-link float-right" href="{% url 'customer-detail' object.id %}">Tillbaka</a>
+    {% else %}
+        <a class="nav-item nav-link float-right" href="{% url 'customer-overview' %}">Tillbaka</a>
+    {% endif %}
+    <div class="border-top mt-3 mb-3"></div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Skapa</button>
+        </div>
+    </form>
+</div>
+{% endblock  %}

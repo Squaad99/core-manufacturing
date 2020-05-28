@@ -1,0 +1,35 @@
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/table.css' %}">
+
+<h5 class="d-inline">Arbete</h5>
+<a class="btn btn-success btn-sm d-inline float-right" href="{% url 'work-task-add' object.id %}">Lägg till arbete</a>
+
+<table class="table table-bordered table-sm mt-3">
+    <thead>
+    <tr>
+        <th width="60%">Titel</th>
+        <th width="35%">Antal timmar</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for work_task in work_task_list %}
+    <tr>
+        <td width="60%">{{ work_task.title }}</td>
+        <td width="35%">{{ work_task.work_hours }}</td>
+        <td class="delete-column">
+            <a class="cross-button" href="{% url 'work-task-delete' work_task.id %}">x</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Arbets timmar: {{ work_tasks_hours }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+{% endblock content %}

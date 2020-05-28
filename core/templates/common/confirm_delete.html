@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="content-section">
+    {{ link_url_name }}
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Ta bort {{ header }}</legend>
+            {% if object.title %}
+            <h2>Vill du ta bort "{{ object.title }}" ?</h2>
+            {% else %}
+            <h2>Vill du ta bort "{{ object_title }}" ?</h2>
+            {% endif %}
+            <small>Efter att du har tagit bort kan du inte komma åt datan igen.</small>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-danger" type="submit">Ta bort</button>
+            {% with url_name|add:"-detail" as url_path %}
+            <a class="btn btn-warning" href="{% url url_path object.id %}">Avbryt</a>
+            {% endwith %}
+        </div>
+    </form>
+</div>
+{% endblock content %}
