@@ -8,7 +8,7 @@ from customers.models import Customer, ContactPerson
 from django.contrib import messages
 
 
-class CustomerListView(ListView):
+class CustomerListView(LoginRequiredMixin, ListView):
     model = Customer
     template_name = os.path.join('customers', 'customer_list.html')
     context_object_name = 'customers'

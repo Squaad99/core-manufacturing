@@ -1,13 +1,9 @@
 {% extends "core/base.html" %}
 {% block content %}
-<div class="container p-5">
-    <div class="content-section m-5">
-        <h2>Du har loggats ut</h2>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                <a href="{% url 'login' %}">Logga in igen</a>
-            </small>
-        </div>
-    </div>
+
+<div id="login-row" class="border p-3 h-25" style="margin: 0 auto;">
+    <h3 class="d-block" style="display: block;">Du har loggats ut</h3>
+    <a class="d-inline" href="{% url 'login' %}">Logga in igen</a>
 </div>
+
 {% endblock content %}

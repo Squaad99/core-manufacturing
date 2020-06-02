@@ -1,28 +1,28 @@
 import os
-
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
 
 
-# Create your views here.
-@login_required
-def home(request):
-    users = User.objects.all()
-    users_names = []
+class Home(LoginRequiredMixin, TemplateView):
+    template_name = os.path.join('core', 'home.html')
 
-    for user in users:
-        users_names.append(user.first_name + " " + user.last_name)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    events = [
-        'Projekt 1 uppdaterad',
-        'Projekt 1 skapad',
-        'Status 1 ändrad',
-    ]
+        events = [
+            'Projekt 1 uppdaterad 2',
+            'Projekt 1 skapad',
+            'Status 1 ändrad',
+        ]
+        context['events'] = events
 
-    context = {
-        'users_names': users_names,
-        'events': events
-    }
+        users = User.objects.all()
+        users_names = []
+        for user in users:
+            users_names.append(user.first_name + " " + user.last_name)
+        context['users_names'] = users_names
 
-    return render(request, os.path.join('core', 'home.html'), context)
+        current_user = User
+
+        return context

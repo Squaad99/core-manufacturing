@@ -20,6 +20,8 @@ from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
 
+from users.views import CustomLoginView
+
 urlpatterns = [
     path('', include('core.urls')),
     path('project/', include('projects.urls')),
@@ -27,7 +29,7 @@ urlpatterns = [
     path('product/', include('products.urls')),
     path('material/', include('materials.urls')),
     path('profile/', user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name=os.path.join('users', 'login.html')), name='login'),
+    path('login/', CustomLoginView.as_view(template_name=os.path.join('users', 'login.html')), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name=os.path.join('users', 'logout.html')), name='logout'),
     path('admin/', admin.site.urls)
 ]
