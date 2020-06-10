@@ -7,11 +7,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from customers.models import Customer, ContactPerson
 from django.contrib import messages
 
-
-class CustomerListView(LoginRequiredMixin, ListView):
-    model = Customer
-    template_name = os.path.join('customers', 'customer_list.html')
-    context_object_name = 'customers'
+from users.models import Profile
 
 
 class CustomerOverview(LoginRequiredMixin, ListView):
@@ -23,6 +19,9 @@ class CustomerOverview(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Kunder'
         context['url_name'] = 'customer'
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        object_list = Customer.objects.filter(company=user_profile.company)
+        context['object_list'] = object_list
         return context
 
 
@@ -32,6 +31,8 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        form.instance.company = user_profile.company
         return super().form_valid(form)
 
 

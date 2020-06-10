@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
+from users.models import Company, Profile
+
 
 class Home(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('core', 'home.html')
@@ -17,12 +19,9 @@ class Home(LoginRequiredMixin, TemplateView):
         ]
         context['events'] = events
 
-        users = User.objects.all()
-        users_names = []
-        for user in users:
-            users_names.append(user.first_name + " " + user.last_name)
-        context['users_names'] = users_names
+        profile = Profile.objects.get(user=self.request.user.id)
+        context['user_profile'] = profile
 
-        current_user = User
+        context['company_users'] = Profile.objects.filter(company=profile.company)
 
         return context

@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 
 from products.models import Product
+from users.models import Company
 
 
 class Project(models.Model):
@@ -11,6 +12,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

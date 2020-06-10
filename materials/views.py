@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from materials.form import MaterialForm
 from materials.models import Material
+from users.models import Profile
 
 
 class MaterialOverview(LoginRequiredMixin, ListView):
@@ -16,6 +17,9 @@ class MaterialOverview(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Material'
         context['url_name'] = 'material'
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        object_list = Material.objects.filter(company=user_profile.company)
+        context['object_list'] = object_list
         return context
 
 
@@ -29,6 +33,8 @@ class MaterialCreate(LoginRequiredMixin, CreateView):
             form.instance.unit_label = "Enhet"
             form.instance.unit_cost = 0
         form.instance.created_by = self.request.user
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        form.instance.company = user_profile.company
         return super().form_valid(form)
 
 

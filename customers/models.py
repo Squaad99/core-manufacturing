@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+from users.models import Company
+
 
 class Customer(models.Model):
     title = models.CharField(max_length=100, verbose_name="Titel")
@@ -9,6 +11,7 @@ class Customer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     #Customer specific
     web_address = models.URLField(max_length=100, verbose_name="Websida", blank=True)

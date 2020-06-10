@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+from users.models import Company
+
 
 class Material(models.Model):
     # Standard Fields
@@ -10,6 +12,8 @@ class Material(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
     # Class specific
     base_cost = models.FloatField(max_length=20)
     scalable_cost = models.BooleanField(default=False)

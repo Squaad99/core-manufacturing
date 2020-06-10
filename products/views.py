@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 
 from products.forms import MaterialForProductForm, WorkTaskForm
 from products.models import Product, MaterialForProduct, WorkTask
+from users.models import Profile
 
 
 class ProductOverview(LoginRequiredMixin, ListView):
@@ -17,6 +18,9 @@ class ProductOverview(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Produkt'
         context['url_name'] = 'product'
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        object_list = Product.objects.filter(company=user_profile.company)
+        context['object_list'] = object_list
         return context
 
 
@@ -27,6 +31,8 @@ class ProductCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        form.instance.company = user_profile.company
         return super().form_valid(form)
 
 

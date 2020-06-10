@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 
 from materials.models import Material
+from users.models import Company
 
 
 class Product(models.Model):
@@ -12,6 +13,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     # Specific Fields
     extra_cost = models.FloatField(max_length=20, verbose_name="Extra kostnad", default=0, blank=True)

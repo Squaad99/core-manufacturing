@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from projects.models import Project, ProductForProject
+from users.models import Profile
 
 
 class ProjectOverview(LoginRequiredMixin, ListView):
@@ -18,6 +19,9 @@ class ProjectOverview(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Projekt'
         context['url_name'] = 'project'
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        object_list = Project.objects.filter(company=user_profile.company)
+        context['object_list'] = object_list
         return context
 
 
@@ -28,6 +32,8 @@ class ProjectCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
+        user_profile = Profile.objects.get(user=self.request.user.id)
+        form.instance.company = user_profile.company
         return super().form_valid(form)
 
 

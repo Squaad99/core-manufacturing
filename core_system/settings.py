@@ -139,3 +139,5 @@ LOGIN_REDIRECT_URL = 'core-home'
 LOGIN_URL = 'login'
 
 django_heroku.settings(locals())
+
+
