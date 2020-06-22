@@ -1,0 +1,30 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
+
+<table class="table table-sm table-bordered">
+    <div class="p-1 border">
+        Kontakt personer
+    </div>
+    <thead>
+    <tr>
+        <td width="35%">Namn</td>
+        <td width="20%">Telefon</td>
+        <td width="40%">Email</td>
+        <td width="5%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'contactPerson-create' object.id %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for contact in contacts %}
+    <tr>
+        <td width="35%">{{ contact.name }}</td>
+        <td width="20%">{{ contact.phone }}</td>
+        <td width="40%"><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+        <td width="5%" class="p-0 bg-danger">
+            <a class="delete-button" href="{% url 'contactPerson-delete' contact.id %}">x</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

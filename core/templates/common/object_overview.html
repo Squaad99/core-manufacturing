@@ -1,6 +1,9 @@
 {% extends "core/base.html" %}
 {% block content %}
 
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/object_table.css' %}">
+
 <script>
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
@@ -18,35 +21,45 @@ jQuery(document).ready(function($) {
 });
 </script>
 
-<div class="content-section">
-    <h1 class="d-inline">{{ header }} - översikt</h1>
-    {% with url_name|add:"-create" as url_path %}
-    <a class="nav-item nav-link float-right" href="{% url url_path %}">Skapa</a>
-    {% endwith %}
-    <div class="border-top mt-3 mb-3"></div>
-
-    <input type="text" class="form-control w-25 mb-2" id="myInput" placeholder="Sök" style="font-size: 10pt">
-
-    <table id="object-table" class="table table-striped table-bordered table-hover"
-           style="width:100%; overflow-y: scroll;">
+<div class="content-container border">
+  <h1 class="d-inline">{{ header }} - översikt</h1>
+  {% with url_name|add:"-create" as url_path %}
+  <a class="button float-right" href="{% url url_path %}">Skapa</a>
+  {% endwith %}
+  <div class="border-top mt-2 mb-3"></div>
+  <input type="text" class="form-control w-25 mb-2" id="myInput" placeholder="Sök" style="font-size: 10pt">
+  <div class="row">
+    <div class="col-10">
+      <div class="tableWrap">
+      <table id="object-table">
         <thead>
-        <tr>
-            <td width="60%">Titel</td>
-            <td width="20%">Av</td>
-            <td width="20%">Datum</td>
-        </tr>
+          <tr>
+            <th width="60%">Titel</th>
+            <th width="20%">Av</th>
+            <th width="20%">Datum</th>
+          </tr>
         </thead>
-        <tbody style="overflow-y: scroll; max-height:400pt;">
-        {% for object in object_list %}
-        {% with url_name|add:"-detail" as url_path %}
-        <tr class="clickable-row p-1" style="cursor: pointer" data-href="{% url url_path object.id %}">
-            <td>{{ object.title }}</td>
-            <td style="font-size: 10pt;">{{ object.created_by.first_name }} {{ object.created_by.last_name }}</td>
-            <td style="font-size: 10pt;">{{ object.created_at|date:'Y-m-d H:i' }}</td>
-        </tr>
-        {% endwith %}
-        {% endfor %}
-    </table>
+        <tbody>
+          {% for object in object_list %}
+          {% with url_name|add:"-detail" as url_path %}
+          <tr class="clickable-row" data-href="{% url url_path object.id %}">
+              <td width="60%">{{ object.title }}</td>
+              <td width="20%" style="font-size: 10pt;">{{ object.created_by.first_name }} {{ object.created_by.last_name }}</td>
+              <td width="20%" style="font-size: 10pt;">{{ object.created_at|date:'Y-m-d H:i' }}</td>
+          </tr>
+          {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    </div>
+    <div class="col-2">      
+      <div class="stats-list">
+        {% if amount %}
+          <label>Antal: {{ amount }}</label>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
-
 {% endblock %}

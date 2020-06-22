@@ -24,9 +24,9 @@ class Customer(models.Model):
 
 
 class ContactPerson(models.Model):
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100)
-    email = models.EmailField(max_length=250)
+    name = models.CharField(max_length=100, verbose_name="Namn")
+    phone = models.CharField(max_length=100, verbose_name="Telefon")
+    email = models.EmailField(max_length=250, verbose_name="Email")
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
     def __str__(self):

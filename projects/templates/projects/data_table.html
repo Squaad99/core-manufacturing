@@ -1,0 +1,11 @@
+<table class="mb-4 w-100">
+<tr class="border-bottom">
+    <td class="w-50 pt-3">Stadie</td>
+    <td class="pt-2">{{ object.state }}</td>
+</tr>
+<tr class="border-bottom">
+    <td class="w-50 pt-3">Kund</td>
+    <td class="pt-2"><a href="{% url 'customer-detail' object.customer.id %}">{{ object.customer }}</a></td>
+</tr>
+</table>
+

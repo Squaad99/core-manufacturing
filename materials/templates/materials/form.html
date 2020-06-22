@@ -18,13 +18,13 @@
     });
 </script>
 
-<div class="content-section">
+<div class="form-container border">
     {% if object %}
-    <h2 class="d-inline">Material - ändra</h2>
-    <a class="nav-item nav-link float-right" href="{% url 'material-detail' object.id %}">Tillbaka</a>
+    <h3 class="d-inline">Material - ändra</h3>
+    <a class="button float-right" href="{% url 'material-detail' object.id %}">Tillbaka</a>
     {% else %}
-    <h2 class="d-inline">Material - ny</h2>
-    <a class="nav-item nav-link float-right" href="{% url 'material-overview' %}">Tillbaka</a>
+    <h3 class="d-inline">Material - ny</h3>
+    <a class="button float-right" href="{% url 'material-overview' %}">Tillbaka</a>
     {% endif %}
     <div class="border-top mt-3 mb-3"></div>
     <form method="POST">
@@ -34,9 +34,9 @@
         </fieldset>
         <div class="form-group">
             {% if object %}
-                <button type="submit" class="btn btn-primary">Spara</button>
+                <button type="submit" class="button">Spara</button>
             {% else %}
-                <button type="submit" class="btn btn-primary">Skapa</button>
+                <button type="submit" class="button">Skapa</button>
             {% endif %}
         </div>
     </form>
@@ -44,7 +44,6 @@
 
 <script>
     var scalableCost = "{{object.scalable_cost}}"
-
     if(scalableCost == "False") {
         $('.scalable_input, #class_a, label:contains("Enhetsnamn"), label:contains("Kostnad per enhet")').hide();
     }

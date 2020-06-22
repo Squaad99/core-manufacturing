@@ -14,13 +14,13 @@ class MaterialOverview(LoginRequiredMixin, ListView):
     template_name = os.path.join('common', 'object_overview.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['header'] = 'Material'
-        context['url_name'] = 'material'
-        user_profile = Profile.objects.get(user=self.request.user.id)
-        object_list = Material.objects.filter(company=user_profile.company)
-        context['object_list'] = object_list
-        return context
+        ctx = super().get_context_data(**kwargs)
+        ctx['header'] = 'Material'
+        ctx['url_name'] = 'material'
+        company = Profile.objects.get(user=self.request.user.id).company
+        object_list = Material.objects.filter(company=company)
+        ctx['object_list'] = object_list
+        return ctx
 
 
 class MaterialCreate(LoginRequiredMixin, CreateView):
@@ -55,10 +55,13 @@ class MaterialDelete(LoginRequiredMixin, DeleteView):
     template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['header'] = 'Material'
-        context['url_name'] = 'material'
-        return context
+        ctx = {
+            'header': 'Material',
+            'url_name': 'material',
+            'object_title': self.object.title,
+            'object_return_id': self.object.id
+        }
+        return ctx
 
     def delete(self, request, *args, **kwargs):
         material = Material.objects.get(pk=kwargs['pk'])

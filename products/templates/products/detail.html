@@ -1,16 +1,21 @@
 {% extends "core/base.html" %}
 {% block content %}
-<article class="media content-section">
-    <div class="">
-        {% include 'common/object_header.html' with object_name="product" %}
-        {% include 'products/material_list.html' %}
-        {% include 'products/work_task_list.html' %}
-
-        <label class="d-inline mb-3">Justera kostnad</label>
-        <label class="d-inline mb-3">{{ object.extra_cost }}</label>
-
-        <label class="d-block mb-2 mt-2">Kommentar</label>
-        <textarea class="form-control mb-3" style="height: 80pt; background-color:#FFF; resize: none;" readonly>{{ object.comment }}</textarea>
+<div class="content-container border">
+    {% include 'common/object_header.html' with object_name="product" object_label="Produkt" %}
+    <div class="row mt-3">
+        <div class="col">
+            {% include 'products/data_table.html' %}
+            {% include 'common/comment.html' %}
+        </div>
+        <div class="col">
+            {% include 'products/material_list.html' %}
+            {% include 'products/work_task_list.html' %}
+        </div>
     </div>
-</article>
+    <div class="row mt-3">
+        <div class="col">
+            <label>Total kostnad: {{ total_cost }}  {{ currency }}</label>
+        </div>
+    </div>
+</div>
 {% endblock content %}

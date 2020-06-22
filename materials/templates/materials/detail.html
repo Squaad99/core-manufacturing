@@ -1,36 +1,14 @@
 {% extends "core/base.html" %}
 {% block content %}
-<article class="media content-section p-4">
-    <div class="media-body">
-        {% include 'common/object_header.html' with object_name="material" %}
-        <div class="p-3">
-            <table style="width:100%">
-                <tr class="border-bottom">
-                    <th class="h4 w-25">
-                        Kostnad
-                    </th>
-                    <td>{{ object.base_cost }}</td>
-                </tr>
-                {% if object.scalable_cost %}
-                <tr class="border-bottom">
-                    <th class="h4 w-25">
-                        Enhets namn
-                    </th>
-                    <td>{{ object.unit_label }}</td>
-                </tr>
-                <tr class="border-bottom">
-                    <th class="h4 w-25">
-                        Enhets kostnad
-                    </th>
-                    <td>{{ object.unit_cost }}</td>
-                </tr>
-                {% endif %}
-            </table>
+<div class="content-container border">
+    {% include 'common/object_header.html' with object_name="material" object_label="Material" %}
+    <div class="row pt-3 ">
+        <div class="col">
+            {% include 'materials/data_table.html' %}
+            {% include 'common/comment.html' %}
         </div>
-        <label class="d-block mb-3">
-            Kommentar
-        </label>
-        <textarea class="form-control mb-3" style="height: 100pt; background-color:#FFF; resize: none;" readonly>{{ object.comment }}</textarea>
+        <div class="col">
+        </div>
     </div>
-</article>
+</div>
 {% endblock content %}

@@ -1,100 +1,47 @@
-.table-content {
-    border: solid 2px gray;
-}
-
-tbody {
+.tbody-content-table {
     display:block;
     height:100pt;
     overflow-y:scroll;
 }
 
-thead, tbody tr {
+thead, tbody, tfoot, tr {
     display:table;
     width:100%;
     table-layout:fixed;
 }
 
-thead {
+thead, tfoot {
     width: calc( 100% - 1em );
 }
 
-td {
-    border: 1px lightgray solid;
-    text-align: center;
-   
-}
-
-table {
+table, tfoot {
     width:100%;
-    border: solid Lightgrey 1px;
 }
 
-.table-header-div {
-    border-top: solid Lightgrey 1px;
-    border-left: solid Lightgrey 1px;
-    border-right: solid Lightgrey 1px;
-    padding-top: 10pt;
-    padding-left: 40pt;
-    padding-right: 40pt;
+td {
+    padding: 2px !important;
 }
 
-.table-header {
-    font-size: 18pt;
-}
-
-.header-table-row {
-    border-bottom: solid Lightgrey 1px;
-}
-
-.table-footer-div {
-    border-bottom: solid Lightgrey 1px;
-    border-left: solid Lightgrey 1px;
-    border-right: solid Lightgrey 1px;
-    padding: 0.5%;
-    position: relative;
-}
-
-.table-footer-label {
-    font-size: 12pt;
-    padding-left: 2%;
-}
-
-
-
-
-
-.plus-button {
-    display: inline-block;
-    font-size: 18pt;
-    padding: 3pt;
-    width: 20pt;
-    height: 20pt;
-    line-height: 11pt;
+.add-button {
+    font-size: 14pt;
     text-align: center;
-    background: green;
     color: white;
-    border-radius: 4px;
+    display: block;
 }
 
-.plus-button:hover {
+.add-button:hover {
     text-decoration: none;
     color: black;
 }
 
-.cross-button {
-    display: inline-block;
-    font-size: 18pt;
-    padding: 3pt;
-    width: 15pt;
-    height: 15pt;
-    line-height: 4pt;
+.delete-button {
+    font-size: 14pt;
     text-align: center;
-    background: red;
     color: white;
-    border-radius: 4px;
+    display: block;
 }
 
-.cross-button:hover {
+.delete-button:hover {
     text-decoration: none;
     color: black;
 }

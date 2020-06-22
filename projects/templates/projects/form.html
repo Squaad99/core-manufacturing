@@ -1,12 +1,12 @@
 {% extends "core/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
-    <h1 class="d-inline">Projekt - skapa</h1>
+<div class="form-container border">
+    <h3 class="d-inline">{{ form_header }}</h3>
     {% if object %}
-        <a class="nav-item nav-link float-right" href="{% url 'project-detail' object.id %}">Tillbaka</a>
+        <a class="button float-right" href="{% url 'project-detail' object.id %}">Tillbaka</a>
     {% else %}
-        <a class="nav-item nav-link float-right" href="{% url 'project-overview' %}">Tillbaka</a>
+        <a class="button float-right" href="{% url 'project-overview' %}">Tillbaka</a>
     {% endif %}
     <div class="border-top mt-3 mb-3"></div>
     <form method="POST">
@@ -15,7 +15,7 @@
             {{ form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Skapa</button>
+            <button class="button" type="submit">Skapa</button>
         </div>
     </form>
 </div>

@@ -2,17 +2,22 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+from customers.models import Customer
 from products.models import Product
-from users.models import Company
+from users.models import Company, ProjectState
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=100, verbose_name="Titel")
-    comment = models.TextField(max_length=500, default="", verbose_name="Kommentar", blank=True)
+    title = models.CharField(max_length=100,)
+    comment = models.TextField(max_length=500, default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    # Specific
+    state = models.ForeignKey(ProjectState, on_delete=models.SET("Missing"))
+    customer = models.ForeignKey(Customer, on_delete=models.SET("Missing"))
 
     def __str__(self):
         return self.title

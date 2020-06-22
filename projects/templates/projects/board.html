@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<script>
+function allowDrop(ev) {
+    if (ev.target.classList.value.includes("project-list")) {
+        ev.preventDefault();
+    }
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  console.log(ev);
+  ev.target.appendChild(document.getElementById(data));
+}
+</script>
+
+<style>
+.project-list {
+    height: 90%;
+}
+.project-item {
+    padding: 5%;
+    text-align: center;
+}
+</style>
+
+<div class="content-container border">
+    <div class="row">
+        {% for state in states %}
+            <div class="col border m-2" style="height: 70vh;">
+                <h5>{{ state.title }}</h5>
+                {% if state.index_position == 1 %}
+                    <div class="project-list border" ondrop="drop(event)" ondragover="allowDrop(event)">
+                      <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)" id="drag1">Projekt 1</div>
+                      <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)" id="drag2">Projekt 2</div>
+                    </div>
+                {% else %}
+                    <div class="project-list border" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

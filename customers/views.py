@@ -1,7 +1,7 @@
 import os
 from django.urls import reverse
 
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import ListView, CreateView, DetailView
 from customers.models import Customer, ContactPerson
@@ -10,7 +10,7 @@ from django.contrib import messages
 from users.models import Profile
 
 
-class CustomerOverview(LoginRequiredMixin, ListView):
+class Overview(LoginRequiredMixin, ListView):
     model = Customer
     context_object_name = 'customers'
     template_name = os.path.join('common', 'object_overview.html')
@@ -22,12 +22,14 @@ class CustomerOverview(LoginRequiredMixin, ListView):
         user_profile = Profile.objects.get(user=self.request.user.id)
         object_list = Customer.objects.filter(company=user_profile.company)
         context['object_list'] = object_list
+        context['amount'] = len(list(object_list))
         return context
 
 
-class CustomerCreateView(LoginRequiredMixin, CreateView):
+class Create(LoginRequiredMixin, CreateView):
     model = Customer
     fields = ['title', 'web_address', 'comment']
+    template_name = os.path.join('customers', 'form.html')
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -36,64 +38,84 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CustomerDetailView(LoginRequiredMixin, DetailView):
+class Detail(LoginRequiredMixin, DetailView):
     model = Customer
     contacts = ContactPerson.objects.filter()
+    template_name = os.path.join('customers', 'detail.html')
 
     def get_context_data(self, **kwargs):
-        customer = kwargs['object']
-        contacts = ContactPerson.objects.filter(customer=customer)
-
+        contacts = ContactPerson.objects.filter(customer=self.object)
         context = {
             'contacts': contacts,
-            'object': customer
+            'object': self.object
         }
         return context
 
 
-class CustomerUpdateView(LoginRequiredMixin, UpdateView):
+class Update(LoginRequiredMixin, UpdateView):
     model = Customer
     fields = ['title', 'web_address', 'comment']
+    template_name = os.path.join('customers', 'form.html')
 
     def form_valid(self, form):
         return super().form_valid(form)
 
 
-class CustomerDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class Delete(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = '/customer'
+    template_name = os.path.join('common', 'confirm_delete.html')
 
-    def test_func(self):
-        return True
+    def get_context_data(self, **kwargs):
+        ctx = {
+            'header': 'Kund',
+            'url_name': 'customer',
+            'object_title': self.object.title,
+            'object_return_id': self.object.id
+        }
+        return ctx
 
     def delete(self, request, *args, **kwargs):
         customer = Customer.objects.get(pk=kwargs['pk'])
         messages.info(self.request, 'Kund bortagen - "' + customer.title + '"')
-        return super(CustomerDeleteView, self).delete(request, *args, **kwargs)
+        return super(Delete, self).delete(request, *args, **kwargs)
 
 
-class ContactPersonCreateView(LoginRequiredMixin, CreateView):
+class ContactPersonCreate(LoginRequiredMixin, CreateView):
     model = ContactPerson
     fields = ['name', 'phone', 'email']
+    template_name = os.path.join('customers', 'form.html')
 
-    def get(self, request, *args, **kwargs):
-        return super(ContactPersonCreateView, self).get(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contact_person'] = True
+        main_object = Customer.objects.get(pk=self.kwargs['customer_id'])
+        context['object'] = main_object
+        return context
 
     def form_valid(self, form):
         form.instance.customer = Customer.objects.get(pk=self.kwargs['customer_id'])
         return super().form_valid(form)
 
 
-class ContactPersonDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ContactPersonDelete(LoginRequiredMixin, DeleteView):
     model = ContactPerson
+    template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_success_url(self):
         return reverse('customer-detail', kwargs={'pk': self.object.customer.id})
 
-    def test_func(self):
-        return True
+    def get_context_data(self, **kwargs):
+        contact_person = ContactPerson.objects.get(pk=self.kwargs['pk'])
+        ctx = {
+            'header': 'Kontaktperson',
+            'url_name': 'customer',
+            'object_title': contact_person.name,
+            'object_return_id': self.object.customer.id
+        }
+        return ctx
 
     def delete(self, request, *args, **kwargs):
         contact_person = ContactPerson.objects.get(pk=kwargs['pk'])
         messages.info(self.request, 'Kontaktperson bortagen - ' + contact_person.name)
-        return super(ContactPersonDeleteView, self).delete(request, *args, **kwargs)
+        return super(ContactPersonDelete, self).delete(request, *args, **kwargs)

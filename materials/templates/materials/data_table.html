@@ -1,0 +1,17 @@
+<table class="mb-4 w-100">
+<tr class="border-bottom">
+    <td class="w-50 pt-3">Kostnad</td>
+    <td class="pt-2">{{ object.base_cost }} {{ currency }}</td>
+</tr>
+{% if object.scalable_cost %}
+<tr class="border-bottom">
+    <td class="w-50 pt-3">Enhets namn</td>
+    <td class="pt-3">{{ object.unit_label }}</td>
+</tr>
+<tr class="border-bottom">
+    <td class="w-50 pt-3">Enhets kostnad</td>
+    <td class="pt-3">{{ object.unit_cost }} {{ currency }}</td>
+</tr>
+{% endif %}
+</table>
+

@@ -1,5 +1,7 @@
 {% extends "core/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>{{ user.username }}</h1>
+<div class="content-container border">
+    <label class="content-header-label">{{ user.first_name }} {{ user.last_name }}</label>
+</div>
 {% endblock content %}

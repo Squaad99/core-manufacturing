@@ -53,3 +53,28 @@ table {
     text-decoration: none;
     color: black;
 }
+
+
+.add-button {
+    font-size: 14pt;
+    text-align: center;
+    color: white;
+    display: block;
+}
+
+.add-button:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.delete-button {
+    font-size: 14pt;
+    text-align: center;
+    color: white;
+    display: block;
+}
+
+.delete-button:hover {
+    text-decoration: none;
+    color: black;
+}

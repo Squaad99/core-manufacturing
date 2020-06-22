@@ -1,11 +1,11 @@
 {% with object_name|add:"-overview" as url_path %}
-    <a style="display: block;" href="{% url url_path %}">Tillbaka</a>
+    <a class="button float-right" href="{% url url_path %}">Tillbaka</a>
 {% endwith %}
 
 {% with object_name|add:"-update" as url_path %}
-    <a style="display: block;" href="{% url url_path object.id %}">Ändra</a>
+    <a class="button float-right mr-2" href="{% url url_path object.id %}">Ändra</a>
 {% endwith %}
 
 {% with object_name|add:"-delete" as url_path %}
-    <a style="display: block;" href="{% url url_path object.id %}">Ta bort</a>
+    <a class="button float-right mr-2" href="{% url url_path object.id %}">Ta bort</a>
 {% endwith %}

@@ -1,0 +1,53 @@
+.tableWrap {
+    height: 500px;
+    border: 1px solid lightgray;
+    overflow-y: auto;
+  }
+
+
+thead tr th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    padding: 16px;
+    border-bottom: 1px lightgray solid;
+}
+
+  /* Basic Demo styling */
+  table {
+    width: 100%;
+    font-family: sans-serif;
+  }
+  table td {
+    padding: 8px;
+  }
+  tbody tr {
+    background-color: white;
+    border-bottom: 2px solid #e8e8e8;
+  }
+  thead {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+  }
+  tbody tr:hover {
+    background: #e6f7ff;
+  }
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.stats-list {
+    border: 1px solid lightgray;
+    height: 80%;
+    padding: 10px;
+    background-color: white;
+}
+

@@ -3,9 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-
 from products.forms import MaterialForProductForm, WorkTaskForm
 from products.models import Product, MaterialForProduct, WorkTask
+from products.utils import calculate_product_cost
 from users.models import Profile
 
 
@@ -35,34 +35,29 @@ class ProductCreate(LoginRequiredMixin, CreateView):
         form.instance.company = user_profile.company
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_header'] = "Produkt - skapa"
+        return context
+
 
 class ProductDetail(LoginRequiredMixin, DetailView):
     model = Product
     template_name = os.path.join('products', 'detail.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        ctx = super().get_context_data(**kwargs)
+        company = Profile.objects.get(user=self.request.user.id).company
+        ctx['currency'] = company.currency
         materials = MaterialForProduct.objects.filter(product=self.object)
-        context['material_list'] = materials
-
-        material_total_cost = 0
-
-        for material in list(materials):
-            material_total_cost += material.material.base_cost
-            if material.material.scalable_cost:
-                material_total_cost += material.material.unit_cost * material.units
-        context['total_material_cost'] = material_total_cost
+        ctx['material_list'] = materials
 
         work_tasks = WorkTask.objects.filter(product=self.object)
-        context['work_task_list'] = work_tasks
+        ctx['work_task_list'] = work_tasks
 
-        work_tasks_hours = 0
-        for work_task in list(work_tasks):
-            work_tasks_hours += work_task.work_hours
-
-        context['work_tasks_hours'] = work_tasks_hours
-
-        return context
+        ctx['total_material_cost'], ctx['work_tasks_hours'], ctx['work_cost'], ctx['total_cost']= \
+            calculate_product_cost(materials, work_tasks, company, self.object)
+        return ctx
 
 
 class ProductUpdate(LoginRequiredMixin, UpdateView):
@@ -70,8 +65,10 @@ class ProductUpdate(LoginRequiredMixin, UpdateView):
     fields = ['title', 'extra_cost', 'comment']
     template_name = os.path.join('products', 'form.html')
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_header'] = "Produkt - ändra"
+        return context
 
 
 class ProductDelete(LoginRequiredMixin, DeleteView):
@@ -80,10 +77,13 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
     template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['header'] = 'Produkt'
-        context['url_name'] = 'product'
-        return context
+        ctx = {
+            'header': 'Produkt',
+            'url_name': 'product',
+            'object_title': self.object.title,
+            'object_return_id': self.object.id
+        }
+        return ctx
 
     def delete(self, request, *args, **kwargs):
         product = Product.objects.get(pk=kwargs['pk'])
@@ -105,6 +105,7 @@ class MaterialForProductCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         main_object = Product.objects.get(pk=self.kwargs['product_id'])
         context['object'] = main_object
+        context['form_header'] = "Lägg till material"
         return context
 
 
@@ -121,11 +122,14 @@ class MaterialForProductDelete(LoginRequiredMixin, DeleteView):
         return super(MaterialForProductDelete, self).delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['header'] = 'Material för produkt'
-        context['url_name'] = 'product'
-        return context
+        material = MaterialForProduct.objects.get(pk=self.kwargs['pk'])
+        ctx = {
+            'header': 'Material för produkt',
+            'url_name': 'product',
+            'object_title': material.material.title,
+            'object_return_id': self.object.product.id
+        }
+        return ctx
 
 
 # Work Task
@@ -142,6 +146,7 @@ class WorkTaskCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         main_object = Product.objects.get(pk=self.kwargs['product_id'])
         context['object'] = main_object
+        context['form_header'] = "Lägg till arbete"
         return context
 
 
@@ -158,8 +163,11 @@ class WorkTaskDelete(LoginRequiredMixin, DeleteView):
         return super(WorkTaskDelete, self).delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['header'] = 'Arbete för produkt'
-        context['url_name'] = 'product'
-        return context
+        ctx = {
+            'header': 'Arbete för produkt',
+            'url_name': 'product',
+            'object_title': self.object.title,
+            'object_return_id': self.object.product.id
+        }
+        return ctx
+

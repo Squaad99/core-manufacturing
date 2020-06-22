@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-container border">
+    <label class="content-header-label">Företag - {{ object.title }}</label>
+    <a class="button float-right" href="{% url 'company-profile-update' %}">Ändra</a>
+    <div class="border-top mt-3 mb-3"></div>
+
+
+</div>
+{% endblock content %}

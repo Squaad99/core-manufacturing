@@ -1,14 +1,14 @@
 {% extends "core/base.html" %}
 {% block content %}
 <div class="content-container border">
-    {% include 'common/object_header.html' with object_name="project" object_label="Projekt" %}
+    {% include 'common/object_header.html' with object_name="customer" object_label="Kund" object=object %}
     <div class="row pt-4">
         <div class="col">
-            {% include 'projects/data_table.html' %}
+            {% include 'customers/data_table.html' %}
             {% include 'common/comment.html' %}
         </div>
         <div class="col">
-            {% include 'projects/product_table.html' %}
+            {% include 'customers/contact_person_table.html' %}
         </div>
     </div>
 </div>
