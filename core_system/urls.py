@@ -28,9 +28,9 @@ urlpatterns = [
     path('customer/', include('customers.urls')),
     path('product/', include('products.urls')),
     path('material/', include('materials.urls')),
+    path('time/', include('time_accounting.urls')),
+    path('company/', include('company.urls')),
     path('profile/', user_views.profile, name='profile'),
-    path('companyProfile/', user_views.CompanyProfileView.as_view(), name='company-profile'),
-    path('companyProfile/update/', user_views.CompanyUpdate.as_view(), name='company-profile-update'),
     path('login/', CustomLoginView.as_view(template_name=os.path.join('users', 'login.html')), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name=os.path.join('users', 'logout.html')), name='logout'),
     path('admin/', admin.site.urls)

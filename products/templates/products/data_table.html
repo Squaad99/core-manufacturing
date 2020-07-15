@@ -1,6 +1,9 @@
-<table class="w-100 mb-4">
-<tr class="border-bottom">
-    <td class="w-50 pt-3">Justera kostnad</td>
-    <td class="pt-2">{{ object.extra_cost }} {{ currency }}</td>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/data_table.css' %}">
+
+<table class="mb-4">
+<tr class="table-row">
+    <td class="td-label p-2">Justera kostnad</td>
+    <td class="td-value p-2">{{ object.extra_cost }} {{ currency }}</td>
 </tr>
 </table>

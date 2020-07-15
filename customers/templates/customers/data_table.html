@@ -1,6 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/data_table.css' %}">
+
 <table class="w-100 mb-4">
-<tr class="border-bottom">
-    <td class="w-50 pt-3">Webbsida</td>
-    <td class="pt-2"><a href="{{ object.web_address }}" target="_blank">{{ object.web_address }}</a></td>
+<tr class="table-row">
+    <td class="td-label p-2">Webbsida</td>
+    <td class="td-value p-2">
+        <a href="{{ object.web_address }}" target="_blank">{{ object.web_address }}</a>
+    </td>
 </tr>
 </table>

@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="form-container border">
+    <h3 class="d-inline">{{ form_header }}</h3>
+    <div class="border-top mt-3 mb-3"></div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="button" type="submit">Skapa</button>
+        </div>
+    </form>
+</div>
+{% endblock  %}

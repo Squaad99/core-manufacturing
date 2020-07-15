@@ -1,10 +1,8 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
 
-<table class="table  table-bordered">
-    <div class="p-1 border">
-        Arbetsuppgifter
-    </div>
+<h6 class="mt-2">Arbetsuppgifter</h6>
+<table class="content-table">
     <thead>
     <tr>
         <td width="55%">Titel</td>
@@ -16,7 +14,7 @@
     </thead>
     <tbody class="tbody-content-table">
     {% for work_task in work_task_list %}
-    <tr>
+    <tr class="border-bottom">
         <td width="55%">{{ work_task.title }}</td>
         <td width="35%">{{ work_task.work_hours }}</td>
         <td width="5%" class="p-0 bg-danger">

@@ -55,13 +55,12 @@ class MaterialDelete(LoginRequiredMixin, DeleteView):
     template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_context_data(self, **kwargs):
-        ctx = {
+        return {
             'header': 'Material',
             'url_name': 'material',
             'object_title': self.object.title,
             'object_return_id': self.object.id
         }
-        return ctx
 
     def delete(self, request, *args, **kwargs):
         material = Material.objects.get(pk=kwargs['pk'])

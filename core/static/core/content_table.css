@@ -1,10 +1,11 @@
 .tbody-content-table {
     display:block;
     height:100pt;
-    overflow-y:scroll;
+    overflow-y:auto;
+    background-color: #f7f9fa;
 }
 
-thead, tbody, tfoot, tr {
+tbody, tfoot, tr {
     display:table;
     width:100%;
     table-layout:fixed;
@@ -14,12 +15,24 @@ thead, tfoot {
     width: calc( 100% - 1em );
 }
 
-table, tfoot {
+table.content-table {
     width:100%;
+    border: 1px gray solid;
 }
 
-td {
-    padding: 2px !important;
+tfoot {
+    width: 100%;
+    border-top: 1px gray solid;
+}
+
+table.content-table td {
+    padding: 1px !important;
+    overflow: hidden;
+    background-color: white;
+}
+
+table.content-table tr {
+    border-bottom: 1px gray solid;
 }
 
 .add-button {
@@ -29,11 +42,6 @@ td {
     display: block;
 }
 
-.add-button:hover {
-    text-decoration: none;
-    color: black;
-}
-
 .delete-button {
     font-size: 14pt;
     text-align: center;
@@ -41,7 +49,14 @@ td {
     display: block;
 }
 
-.delete-button:hover {
+.update-button {
+    font-size: 14pt;
+    text-align: center;
+    color: white;
+    display: block;
+}
+
+.add-button:hover, .delete-button:hover, .update-button:hover {
     text-decoration: none;
     color: black;
 }

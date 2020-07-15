@@ -15,9 +15,16 @@
         </fieldset>
         <div class="form-group">
             <button class="btn btn-danger" type="submit">Ta bort</button>
-            {% with url_name|add:"-detail" as url_path %}
-                 <a class="button" href="{% url url_path object_return_id %}">Avbryt</a>
-            {% endwith %}
+
+            {% if object_return_id %}
+                {% with url_name|add:"-detail" as url_path %}
+                    <a class="button" href="{% url url_path object_return_id %}">Avbryt</a>
+                {% endwith %}
+            {% else %}
+                {% with url_name as url_path %}
+                    <a class="button" href="{% url url_path %}">Avbryt</a>
+                {% endwith %}
+            {% endif %}
         </div>
     </form>
 </div>

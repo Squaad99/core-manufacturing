@@ -1,0 +1,9 @@
+.comment-div {
+    border: 1px solid gray;
+}
+
+.comment-section {
+    border-top: 1px solid gray;
+    height: 12vh;
+    overflow-y: auto;
+}

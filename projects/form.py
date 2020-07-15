@@ -1,8 +1,8 @@
 from django import forms
 
+from company.models import ProjectState
 from customers.models import Customer
 from projects.models import Project
-from users.models import ProjectState
 
 
 class ProjectForm(forms.ModelForm):

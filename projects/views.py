@@ -5,9 +5,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 
+from company.models import ProjectState
+from products.models import MaterialForProduct, WorkTask
+from products.utils import calculate_product_cost
 from projects.form import ProjectForm
 from projects.models import Project, ProductForProject
-from users.models import Profile, ProjectState
+from users.models import Profile
 
 
 class ProjectOverview(LoginRequiredMixin, ListView):
@@ -49,10 +52,41 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
     template_name = os.path.join('projects', 'detail.html')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        company = Profile.objects.get(user=self.request.user.id).company
         product_list = ProductForProject.objects.filter(project=self.object)
-        context['product_list'] = product_list
-        return context
+        calculate_products = []
+        total_material_cost = 0
+        total_work_hours = 0
+        for product in product_list:
+            materials = MaterialForProduct.objects.filter(product=product.product)
+            work_tasks = WorkTask.objects.filter(product=product.product)
+            cost_response = calculate_product_cost(materials, work_tasks, company, product.product)
+            cost = (cost_response[0] * product.quantity)
+            total_material_cost += cost
+            work_hours = (cost_response[1] * product.quantity)
+            total_work_hours += work_hours
+            calculate_products.append(
+                {
+                    'title': product.product.title,
+                    'cost': cost,
+                    'work_hours': total_work_hours,
+                    'quantity': product.quantity,
+                    'id': product.id
+                }
+            )
+
+        total_work_cost = (total_work_hours * company.cost_per_work_hour)
+        total_cost = total_material_cost + total_work_cost
+
+        return {
+            'product_list': calculate_products,
+            'object': self.object,
+            'total_material_cost': total_material_cost,
+            'total_work_hours': total_work_hours,
+            'total_work_cost': total_work_cost,
+            'total_cost': total_cost,
+            'currency': company.currency
+        }
 
 
 class ProjectUpdate(LoginRequiredMixin, UpdateView):
@@ -80,15 +114,13 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
         }
         return ctx
 
-
-
     def delete(self, request, *args, **kwargs):
         material = Project.objects.get(pk=kwargs['pk'])
         messages.info(self.request, 'Projekt borttaget - "' + material.title + '"')
         return super(ProjectDelete, self).delete(request, *args, **kwargs)
 
 
-# ProductFor Project
+# Product for Project
 class ProductForProjectCreate(LoginRequiredMixin, CreateView):
     model = ProductForProject
     template_name = os.path.join('projects', 'form.html')
@@ -111,7 +143,7 @@ class ProductForProjectDelete(LoginRequiredMixin, DeleteView):
     template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_success_url(self):
-        return reverse('project-detail', kwargs={'pk': self.object.product.id})
+        return reverse('project-detail', kwargs={'pk': self.object.project.id})
 
     def delete(self, request, *args, **kwargs):
         product_for_project = ProductForProject.objects.get(pk=kwargs['pk'])
@@ -119,15 +151,16 @@ class ProductForProjectDelete(LoginRequiredMixin, DeleteView):
         return super(ProductForProjectDelete, self).delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        product_for_project = ProductForProject.objects.get(pk=self.kwargs['pk'])
-        context = super().get_context_data(**kwargs)
-        context['header'] = 'Produkt för projekt'
-        context['url_name'] = 'project'
-        context['object_title'] = product_for_project.product.title
-        context['object'] = product_for_project.project
-        return context
+        ctx = {
+            'header': 'produkt för projekt',
+            'url_name': 'project',
+            'object_title': self.object.product.title,
+            'object_return_id': self.object.project.id
+        }
+        return ctx
 
 
+# Project board
 class ProjektBoard(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('projects', 'board.html')
 

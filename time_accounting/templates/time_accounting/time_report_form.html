@@ -1,0 +1,93 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="content-container border">
+    <form method="get" class="border p-2">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col">
+                <label class="form-check-label">Specifik tidsperiod</label>
+                <input type="checkbox" class="form-check-input ml-3" id="specificTimePeriod">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <label class="form-check-label">Anställd</label>
+                {{ filter_time_report.form.employee }}
+            </div>
+            <div class="col-2" id="timePeriod">
+                <label class="form-check-label">Period</label>
+                {{ filter_time_report.form.date }}
+            </div>
+            <div class="col-4" id="specificDatePeriod">
+                <label class="form-check-label">Start</label>
+                {{ filter_time_report.form.start_date }}
+    
+                <label class="form-check-label ml-3">Slut</label>
+                {{ filter_time_report.form.end_date }}
+            </div>
+            <button class="button" type="submit">Filtrera</button>
+        </div>
+    </form>
+    {% include 'time_accounting/time_report_table.html' %}
+    <form class="border p-2 mt-3" method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <div class="row">
+                <div class="col">
+                    {{ form.project|as_crispy_field }}
+                </div>
+                <div class="col">
+                    {{ form.employee|as_crispy_field }}
+                </div>
+                <div class="col">
+                    {{ form.hours|as_crispy_field }}
+                </div>
+                <div class="col">
+                    {{ form.date|as_crispy_field }}
+                </div>
+            </div>
+            <button class="button float-right" type="submit">Lägg till</button>
+        </fieldset>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#specificTimePeriod').change(function() {
+            if(this.checked) {
+                $("#timePeriod").hide();
+                document.getElementById('id_date').value = ''
+                $("#specificDatePeriod").show();
+            } else {
+                $("#timePeriod").show();
+                $("#specificDatePeriod").hide();
+                document.getElementById('id_start_date').value = ''
+                document.getElementById('id_end_date').value = ''
+            }
+        });
+    });
+
+    var url = new URL(window.location.href);
+    var startDate = url.searchParams.get("start_date");
+    var endDate = url.searchParams.get("end_date");
+
+    if (startDate && endDate) {
+        document.getElementById("specificTimePeriod").checked = true;
+    }else {
+        document.getElementById('id_start_date').value = ''
+        document.getElementById('id_end_date').value = ''
+    }
+
+    if(document.getElementById('specificTimePeriod').checked) {
+        $("#timePeriod").hide();
+        $("#specificDatePeriod").show();
+    } else {
+        $("#timePeriod").show();
+        $("#specificDatePeriod").hide();
+    }   
+</script>
+
+{% endblock  %}

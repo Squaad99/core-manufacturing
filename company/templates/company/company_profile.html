@@ -5,6 +5,17 @@
     <label class="content-header-label">Företag - {{ object.title }}</label>
     <a class="button float-right" href="{% url 'company-profile-update' %}">Ändra</a>
     <div class="border-top mt-3 mb-3"></div>
+    <div class="row">
+        <div class="col">
+            1
+        </div>
+        <div class="col">
+            {% include 'company/employee_list.html' %}
+        </div>
+
+
+    </div>
+
 
 
 </div>

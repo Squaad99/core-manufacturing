@@ -2,7 +2,7 @@
 {% block content %}
 <div class="content-container border">
     {% include 'common/object_header.html' with object_name="project" object_label="Projekt" %}
-    <div class="row pt-4">
+    <div class="row p-2 h-75">
         <div class="col">
             {% include 'projects/data_table.html' %}
             {% include 'common/comment.html' %}
@@ -11,5 +11,12 @@
             {% include 'projects/product_table.html' %}
         </div>
     </div>
+
+    <div class="row border-top pt-3" style="bottom:0;">
+        <label class="mr-3">Kostnad: {{ total_cost }} {{ currency }}</label>
+        <label class="mr-3">Materialkostnad: {{total_material_cost}} {{ currency }}</label>
+        <label class="mr-3">Arbetskostnad: {{total_work_cost}} {{ currency }}/ Arbetstimmar {{ total_work_hours }}</label>
+    </div>
+
 </div>
 {% endblock content %}
