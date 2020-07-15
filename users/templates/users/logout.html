@@ -1,9 +1,9 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<div id="login-row" class="border p-3 h-25" style="margin: 0 auto;">
+<div id="login-row" class="border rounded p-3 w-25" style="margin: 0 auto; background: white;">
     <h3 class="d-block" style="display: block;">Du har loggats ut</h3>
-    <a class="d-inline" href="{% url 'login' %}">Logga in igen</a>
+    <a href="{% url 'login' %}">Logga in igen</a>
 </div>
 
 {% endblock content %}
