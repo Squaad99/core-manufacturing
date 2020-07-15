@@ -1,0 +1,31 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
+
+<h6>Anställda</h6>
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="90%">Namn</td>
+        <td width="10%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'company-employee-create' %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for employee in employee_list %}
+    <tr class="border-bottom">
+        <td width="90%">{{ employee.title }}</td>
+        <td width="10%" class="p-0">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="update-button" href="{% url 'company-employee-update' employee.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'company-employee-delete' employee.id %}">x</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

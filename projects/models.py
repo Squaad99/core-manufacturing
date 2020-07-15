@@ -2,9 +2,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
+from company.models import ProjectState, Company
 from customers.models import Customer
 from products.models import Product
-from users.models import Company, ProjectState
 
 
 class Project(models.Model):
@@ -32,4 +32,4 @@ class ProductForProject(models.Model):
     quantity = models.IntegerField(default=0, verbose_name="Antal")
 
     def get_absolute_url(self):
-        return reverse('project-detail', kwargs={'pk': self.product.id})
+        return reverse('project-detail', kwargs={'pk': self.project.id})

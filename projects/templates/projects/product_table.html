@@ -1,31 +1,36 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
 
-<div class="table-content">
-<div class="table-header-div">
-    <label class="table-header">Produkter</label>
-    <a class="btn btn-success btn-sm text-sm-right float-right" href="{% url 'project-product-add' object.id %}">
-        Lägg till produkt
-    </a>
-</div>
-<table class="">
-    <tbody>
-    {% for product_for_project in product_list %}
+<h6>Produkter</h6>
+<table class="content-table">
+    <thead>
     <tr>
-        <td>{{ product_for_project.product.title }}</td>
-        <td>Kostnad - 1250(Saknas)</td>
-        <td>Timmar - 120(Saknas)</td>
-        <td>Antal - {{ product_for_project.quantity }}</td>
-        <td class="delete-column">
-            <a class="cross-button" href="{% url 'project-product-delete' product_for_project.id %}">x</a>
+        <td width="35%">Titel</td>
+        <td width="20%">Kostnad</td>
+        <td width="20%">Arbetstimmar</td>
+        <td width="20%">Antal</td>
+        <td width="5%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'project-product-add' object.id %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for product in product_list %}
+    <tr class="border-bottom">
+        <td width="35%">{{ product.title }}</td>
+        <td width="20%">{{ product.cost }}</td>
+        <td width="20%">{{ product.work_hours }}</td>
+        <td width="20%">{{ product.quantity }}</td>
+        <td  width="5%" class="p-0 bg-danger">
+            <a class="delete-button" href="{% url 'project-product-delete' product.id %}">x</a>
         </td>
     </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+        <tr>
+            <td>Kostnad: {{ total_material_cost }} {{ currency }}</td>
+            <td>Timmar: {{ total_work_hours }}</td>
+        </tr>
+    </tfoot>
 </table>
-<div class="table-footer-div">
-    <label class="table-footer-label">Antal: 0</label>
-    <label class="table-footer-label">Kostnad: 100</label>
-    <label class="table-footer-label">Timmar: 20</label>
-</div>
-</div>

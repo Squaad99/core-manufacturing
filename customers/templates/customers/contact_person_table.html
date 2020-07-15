@@ -1,10 +1,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
 
-<table class="table table-sm table-bordered">
-    <div class="p-1 border">
-        Kontakt personer
-    </div>
+
+<h6>Kontakt personer</h6>
+<table class="content-table">
     <thead>
     <tr>
         <td width="35%">Namn</td>
@@ -17,7 +16,7 @@
     </thead>
     <tbody class="tbody-content-table">
     {% for contact in contacts %}
-    <tr>
+    <tr class="border-bottom">
         <td width="35%">{{ contact.name }}</td>
         <td width="20%">{{ contact.phone }}</td>
         <td width="40%"><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>

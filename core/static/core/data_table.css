@@ -1,3 +1,13 @@
-.data-table {
-    width: 50%;
+.table-row {
+    border-bottom: 1px gray solid;
+}
+
+.td-label {
+    width: 25%;
+    background-color: transparent;
+}
+
+.td-value {
+    background-color: transparent;
+    overflow: hidden;
 }

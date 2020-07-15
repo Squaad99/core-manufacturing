@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="form-container border">
+    {% if object %}
+    <h3 class="d-inline">Anställd - Ändra</h3>
+    {% else %}
+    <h3 class="d-inline">Anställd - Skapa</h3>
+    {% endif %}
+    <a class="button float-right" href="{% url 'company-profile' %}">Tillbaka</a>
+    <div class="border-top mt-3 mb-3"></div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        {% if object %}
+        <button class="button d-block mt-2" type="submit">Spara</button>
+        {% else %}
+        <button class="button d-block mt-2" type="submit">Skapa</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock  %}
