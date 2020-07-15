@@ -28,3 +28,6 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test
+      env:
+        CORE_M_SECRET_KEY: 1234568910
+        DEBUG: True

@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import django_heroku
+if 'HEROKU' in os.environ:
+    import django_heroku
+    django_heroku.settings(locals())
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -140,6 +142,5 @@ LOGIN_REDIRECT_URL = 'core-home'
 
 LOGIN_URL = 'login'
 
-django_heroku.settings(locals())
 
 
