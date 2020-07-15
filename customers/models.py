@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
-from users.models import Company
+from company.models import Company
 
 
 class Customer(models.Model):
