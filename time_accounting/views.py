@@ -85,7 +85,7 @@ class TimeCalendarOverView(LoginRequiredMixin, TemplateView):
         else:
             selected_month = dt.now()
         company = Profile.objects.get(user=self.request.user.id).company
-        locale.setlocale(locale.LC_TIME, "sv_SE")
+        locale.setlocale(locale.LC_TIME, "sv_SE.utf8")
         month_range = monthrange(selected_month.year, selected_month.month)
         previous_month_date = selected_month.replace(day=1) - datetime.timedelta(days=1)
         next_month_date = selected_month.replace(day=month_range[1]) + datetime.timedelta(days=1)
