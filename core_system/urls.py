@@ -15,6 +15,7 @@ Including another URLconf
 """
 import os
 
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from users import views as user_views
@@ -30,7 +31,9 @@ urlpatterns = [
     path('material/', include('materials.urls')),
     path('time/', include('time_accounting.urls')),
     path('company/', include('company.urls')),
-    path('profile/', user_views.profile, name='profile'),
+    path('profile/', user_views.UserProfile.as_view(), name='profile'),
+    path('update/', user_views.edit_profile, name='user-update'),
+    path(r'password/', user_views.change_password, name='change-password'),
     path('login/', CustomLoginView.as_view(template_name=os.path.join('users', 'login.html')), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name=os.path.join('users', 'logout.html')), name='logout'),
     path('admin/', admin.site.urls)
