@@ -2,6 +2,16 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="content-container border">
-    <label class="content-header-label">{{ user.first_name }} {{ user.last_name }}</label>
+    <h4 class="d-inline">Din profil</h4>
+    <a class="button float-right" href="{% url 'user-update' %}">Ändra</a>
+    <div class="border-top mt-4 mb-3"></div>
+    <div class="row">
+        <div class="col-5">
+            {% include 'users/user_data_table.html' %}
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
 </div>
 {% endblock content %}

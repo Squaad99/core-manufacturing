@@ -69,7 +69,11 @@
             </div>
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                <a class="nav-item link-header" href="{% url 'profile' %}">{{ user.first_name }} {{ user.last_name}}</a>
+                    {% if user.first_name %}
+                        <a class="nav-item link-header" href="{% url 'profile' %}">{{ user.first_name }} {{ user.last_name}}</a>
+                    {% else %}
+                        <a class="nav-item link-header" href="{% url 'profile' %}">Användare</a>
+                    {% endif %}
                 <a class="nav-item link-header" href="{% url 'company-profile' %}">Företag</a>
                 <a class="nav-item link-header" href="{% url 'logout' %}">Logga ut</a>
                 {% else %}

@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/data_table.css' %}">
+
+<table class="w-100 mb-4">
+    <tr class="table-row">
+        <td class="td-label p-2">Förnamn</td>
+        <td class="td-value p-2">{{ user.first_name|default:"Saknas" }}</td>
+    </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Efternamn</td>
+        <td class="td-value p-2">{{ user.last_name|default:"Saknas" }}</td>
+    </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Mail</td>
+        <td class="td-value p-2">{{ user.email|default:"Saknas" }}</td>
+    </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Gick med</td>
+        <td class="td-value p-2">{{ user.date_joined|date:'Y-m-d H:i' }}</td>
+    </tr>
+</table>
