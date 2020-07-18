@@ -2,7 +2,6 @@ import os
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
 from django.views.generic import UpdateView, ListView, CreateView, DeleteView
 
 from company.models import Employee, ProjectState
@@ -16,6 +15,7 @@ class CompanyProfileView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         company = Profile.objects.get(user=self.request.user.id).company
+        context['company'] = company
         context['employee_list'] = Employee.objects.filter(company=company)
         context['object'] = company
         context['id'] = company.id
