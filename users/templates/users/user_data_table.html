@@ -18,4 +18,8 @@
         <td class="td-label p-2">Gick med</td>
         <td class="td-value p-2">{{ user.date_joined|date:'Y-m-d H:i' }}</td>
     </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Lösenord</td>
+        <td class="td-value p-2"><a href="{% url 'change-password' %}">Ändra</a></td>
+    </tr>
 </table>
