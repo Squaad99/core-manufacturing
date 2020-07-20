@@ -1,0 +1,41 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/list.css' %}">
+
+<h6>Projekt stadier</h6>
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="45%">Titel</td>
+        <td width="20%">Position</td>
+        <td width="20%">Visa bräda</td>
+        <td width="15%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'company-project-state-create' %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for project_state in project_state_list %}
+    <tr class="border-bottom">
+        <td width="50%">{{ project_state.title }}</td>
+        <td width="20%">{{ project_state.index_position }}</td>
+        <td width="20%">
+            {% if project_state.display_table %}
+            Ja
+            {% else %}
+            Nej
+            {% endif %}
+        </td>
+        <td width="10%" class="p-0">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="update-button" href="{% url 'company-project-state-update' project_state.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'company-project-state-delete' project_state.id %}">x</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

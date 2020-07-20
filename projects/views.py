@@ -2,6 +2,7 @@ import os
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 
@@ -33,17 +34,19 @@ class ProjectOverview(LoginRequiredMixin, ListView):
 class ProjectCreate(LoginRequiredMixin, CreateView):
     model = Project
     template_name = os.path.join('projects', 'form.html')
-    form_class = ProjectForm
+    fields = ['title', 'state', 'customer', 'comment']
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
-        user_profile = Profile.objects.get(user=self.request.user.id)
-        form.instance.company = user_profile.company
+        company = Profile.objects.get(user=self.request.user.id).company
+        form.instance.company = company
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
         context = super().get_context_data(**kwargs)
         context['form_header'] = "Projekt - skapa"
+        context['form'] = ProjectForm(company=company)
         return context
 
 
@@ -166,5 +169,17 @@ class ProjektBoard(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['states'] = list(ProjectState.objects.filter(company=Profile.objects.get(user=self.request.user.id).company))
+        company = Profile.objects.get(user=self.request.user.id).company
+        project_states = list(ProjectState.objects.filter(company=company))
+        project_states.sort(key=lambda x: x.index_position)
+
+        project_state_list = []
+
+        for project_state in project_states:
+            if project_state.display_table:
+                total_work_hours = 0
+                projects = Project.objects.filter(company=company, state=project_state)
+                project_state_list.append([project_state, projects, total_work_hours])
+
+        context['states'] = project_state_list
         return context

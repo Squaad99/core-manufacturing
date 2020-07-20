@@ -5,27 +5,12 @@
     <h3 class="d-inline">{{ form_header }}</h3>
     <a class="button float-right" href="{% url 'company-profile' %}">Tillbaka</a>
     <div class="border-top mt-3 mb-3"></div>
-
-    <div class="row">
-        <div class="col">
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    {{ form|crispy }}
-                </fieldset>
-                {% include 'company/state_list.html' %}
-                <button class="button d-block mt-2" type="submit">Spara</button>
-            </form>
-        </div>
-        <div class="col">
-
-        </div>
-    </div>
-
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{ form|crispy }}
+        </fieldset>
+        <button class="button d-block mt-2" type="submit">Spara</button>
+    </form>
 </div>
 {% endblock  %}
-
-<!--<ul id="myList">-->
-<!--                    <li id="myId1">First Item <input type="hidden" name="myid1" value="Value1"></li>-->
-<!--                    <li id="myId2">Second Item <input type="hidden" name="myid2" value="Value2"></li>-->
-<!--                </ul>-->

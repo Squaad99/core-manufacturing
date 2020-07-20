@@ -15,6 +15,8 @@ function drag(ev) {
 function drop(ev) {
   ev.preventDefault();
   var data = ev.dataTransfer.getData("text");
+  console.log("ddwda")
+  var testDd = document.getElementById(data);
   console.log(ev);
   ev.target.appendChild(document.getElementById(data));
 }
@@ -22,28 +24,39 @@ function drop(ev) {
 
 <style>
 .project-list {
-    height: 90%;
+    height: 100%;
 }
 .project-item {
-    padding: 5%;
-    text-align: center;
+    padding: 6px;
+    height: 70px;
 }
 </style>
 
-<div class="content-container border">
-    <div class="row">
+<div class="content-container">
+    <div class="row h-100">
         {% for state in states %}
-            <div class="col border m-2" style="height: 70vh;">
-                <h5>{{ state.title }}</h5>
-                {% if state.index_position == 1 %}
+        <div class="col m-1 p-1">
+            <div class="row h-75">
+                <div class="col">
+                    <h6>{{ state.0.title }}</h6>
                     <div class="project-list border" ondrop="drop(event)" ondragover="allowDrop(event)">
-                      <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)" id="drag1">Projekt 1</div>
-                      <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)" id="drag2">Projekt 2</div>
+                        {% for project in state.1 %}
+                        <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)"
+                             id="{{ project.id }}">
+                            <a href="{% url 'project-detail' project.id %}">{{ project.title }}</a>
+                            <label class="d-block">Arbetstimmar: 0</label>
+                        </div>
+                        {% endfor %}
                     </div>
-                {% else %}
-                    <div class="project-list border" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                {% endif %}
+                </div>
             </div>
+            <div class="row h-25 mt-5">
+                <div class="col">
+                    <label class="d-block">Antal: {{ state.1.count  }}</label>
+                    <label>Totala Arbetstimmar: {{ state.2 }}</label>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
