@@ -10,13 +10,10 @@
             {% include 'company/data_table.html' %}
         </div>
         <div class="col">
-            {% include 'company/employee_list.html' %}
+            {% include 'company/employee_table.html' with header="Anställd" %}
+            <div class="border-top mt-3 mb-3"></div>
+            {% include 'company/project_state_table.html' with header="Projekt stadie" %}
         </div>
-
-
     </div>
-
-
-
 </div>
 {% endblock content %}

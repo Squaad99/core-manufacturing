@@ -29,8 +29,13 @@ class Employee(models.Model):
 
 class ProjectState(models.Model):
     title = models.CharField(max_length=30)
-    index_position = models.IntegerField()
+    index_position = models.IntegerField(verbose_name="Position")
+    display_table = models.BooleanField(verbose_name="Visa bräda", default=True)
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
+
+    @staticmethod
+    def get_absolute_url():
+        return reverse('company-profile')
