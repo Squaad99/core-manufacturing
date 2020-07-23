@@ -11,6 +11,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView, TemplateVie
 from time_accounting.filters import TimeReportFilter
 from time_accounting.forms import TimeReportForm, TimeReportUpdateForm, WorkReportForm
 from time_accounting.models import TimeReport, WorkReport
+from time_accounting.utils import setup_calendar
 from users.models import Profile
 
 
@@ -79,61 +80,35 @@ class TimeCalendarOverView(LoginRequiredMixin, TemplateView):
     template_name = os.path.join('time_accounting', 'calendar', 'calendar_overview.html')
 
     def get_context_data(self, **kwargs):
-        if 'selected_month' in kwargs:
-            input_date = kwargs['selected_month'].split('-')
-            selected_month = datetime.datetime(int(input_date[0]), int(input_date[1]), 1)
-        else:
-            selected_month = dt.now()
         company = Profile.objects.get(user=self.request.user.id).company
-        locale.setlocale(locale.LC_TIME, "sv_SE.utf8")
-        month_range = monthrange(selected_month.year, selected_month.month)
-        previous_month_date = selected_month.replace(day=1) - datetime.timedelta(days=1)
-        next_month_date = selected_month.replace(day=month_range[1]) + datetime.timedelta(days=1)
-
-        date_of_month = 1
-        week_rows = []
-
-        week = []
-
-        if not month_range[0] == 0:
-            previous_month_range = monthrange(previous_month_date.year, previous_month_date.month)
-            last_date = previous_month_range[1]
-            for i in range(0, month_range[0]):
-                week.append({'date': last_date - i, 'current_month': False})
-            week.reverse()
-            while True:
-                week.append({'date': selected_month.replace(day=date_of_month), 'current_month': True})
-                date_of_month += 1
-                if len(week) == 7:
-                    break
-        week_rows.append(week)
-
-        while True:
-            week = []
-            next_month_date_count = 1
-            for i in range(0, 7):
-                if date_of_month <= month_range[1]:
-                    week.append({'date': selected_month.replace(day=date_of_month), 'current_month': True})
-                    date_of_month += 1
-                else:
-                    week.append({'date': next_month_date_count, 'current_month': False})
-                    next_month_date_count += 1
-            week_rows.append(week)
-            if date_of_month > month_range[1]:
-                break
-
-        previous_month = str(previous_month_date.year) + "-" + str(previous_month_date.month)
-        next_month = str(next_month_date.year) + "-" + str(next_month_date.month)
+        calendar = setup_calendar(**kwargs)
 
         return {
-            'current_date': selected_month,
-            'month_name': selected_month.strftime('%B').capitalize(),
-            'previous_name': previous_month_date.strftime('%B').capitalize(),
-            'previous_month': previous_month,
-            'next_name': next_month_date.strftime('%B').capitalize(),
-            'next_month': next_month,
-            'week_rows': week_rows
+            'current_date': calendar.selected_month,
+            'month_name': calendar.selected_month.strftime('%B').capitalize(),
+            'previous_name': calendar.previous_month_date.strftime('%B').capitalize(),
+            'previous_month': calendar.previous_month,
+            'next_name': calendar.next_month_date.strftime('%B').capitalize(),
+            'next_month': calendar.next_month,
+            'week_rows': calendar.week_rows
         }
+
+
+class TimeCalendarDate(LoginRequiredMixin, TemplateView):
+    template_name = os.path.join('time_accounting', 'calendar', 'calendar_date_view.html')
+
+    def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
+        selected_date = dt.now()
+        if 'selected_date' in kwargs:
+            divided = kwargs['selected_date'].split('-')
+            selected_date = datetime.datetime(int(divided[0]), int(divided[1]), int(divided[2]))
+
+        ctx = super().get_context_data(**kwargs)
+        work_report_list = WorkReport.objects.filter(company=company, date=selected_date)
+        ctx['work_report_list'] = work_report_list
+        ctx['selected_date'] = selected_date.date()
+        return ctx
 
 
 class WorkReportCreate(LoginRequiredMixin, CreateView):
@@ -143,7 +118,12 @@ class WorkReportCreate(LoginRequiredMixin, CreateView):
     success_url = "/time/calendar/overview/"
 
     def form_valid(self, form):
+        if form.instance.time_start > form.instance.time_end:
+            messages.error(self.request, "Starttid måste vara tidigare än sluttid.", extra_tags=" alert-danger")
+            return super().form_invalid(form)
+
         form.instance.company = Profile.objects.get(user=self.request.user.id).company
+        form.instance.active = False
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -152,12 +132,3 @@ class WorkReportCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class WorkReportDate(LoginRequiredMixin, ListView):
-    template_name = os.path.join('time_accounting', 'calendar', 'time_report_date.html')
-    model = TimeReport
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        company = Profile.objects.get(user=self.request.user.id).company
-        time_report_list = TimeReport.objects.filter(company=company)
-        return context

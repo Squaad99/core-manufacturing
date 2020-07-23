@@ -1,3 +1,7 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'core/calendar.css' %}">
+
 <div id="calendar" class="">
     <div id="calendarHeader" class="border-bottom row" style="font-size: 14pt;">
         <div class="col text-center p-2 pl-5 pr-5">
@@ -19,7 +23,9 @@
     <div class="row">
         {% for date in week_row %}
             {% if date.current_month == True %}
-                <div class="col border" style="height: 90px" onclick="location.href={% url 'time-calendar-overview' %};" style="cursor:pointer;">{{ date.date.day }}</div>
+                <div class="col border date-box">
+                    <a href="{% url 'time-calendar-dateview' date.date_only %}">{{ date.date.day }}</a>
+                </div>
             {% else %}
                 <div class="col border border-dark" style="height: 90px; background-color: LightGray">{{ date.date }}</div>
             {% endif %}

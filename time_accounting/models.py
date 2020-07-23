@@ -20,3 +20,4 @@ class WorkReport(models.Model):
     date = models.DateField(verbose_name='Datum')
     time_start = models.TimeField(verbose_name='Start')
     time_end = models.TimeField(verbose_name='Avslut')
+    active = models.BooleanField(default=False)

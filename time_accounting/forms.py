@@ -35,9 +35,12 @@ class TimeReportUpdateForm(forms.ModelForm):
 
 
 class WorkReportForm(forms.ModelForm):
-    date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label='Datum')
-    time_start = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
-    time_end = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}))
+    date = forms.DateField(initial=datetime.date.today, widget=forms.TextInput(attrs={'type': 'date'}), label='Datum')
+    time_start = forms.TimeField(widget=forms.TextInput(attrs={'type': 'text', 'maxlength': '5', 'minlength': '4',
+                                                               'autocomplete': 'off'}), label="Tid start HH:MM")
+    time_end = forms.TimeField(widget=forms.TextInput(attrs={'type': 'text', 'maxlength': '5', 'minlength': '4',
+                                                             'autocomplete': 'off'}),
+                               label="Tid slut HH:MM")
 
     class Meta:
         model = WorkReport

@@ -1,0 +1,23 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
+
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="25%">Anställd</td>
+        <td width="25%">Datum</td>
+        <td width="25%">Starttid</td>
+        <td width="25%">Sluttid</td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table" style="height:400pt;">
+    {% for work_report in work_report_list %}
+    <tr class="border-bottom">
+        <td width="25%">{{ work_report.employee }}</td>
+        <td width="25%">{{ work_report.date }}</td>
+        <td width="25%">{{ work_report.time_start }}</td>
+        <td width="25%">{{ work_report.time_end }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
