@@ -7,11 +7,41 @@
     <form method="POST">
         {% csrf_token %}
         <fieldset class="form-group">
-            {{ form|crispy }}
+            {{ form.employee|as_crispy_field }}
+            {{ form.date|as_crispy_field }}
+            <div class="form-row">
+                <div class="p-2">
+                    {{ form.time_start|as_crispy_field }}
+                </div>
+                <div class="p-2">
+                    {{ form.time_end|as_crispy_field }}
+                </div>
+            </div>
         </fieldset>
         <div class="form-group">
             <button class="button" type="submit">Skapa</button>
         </div>
     </form>
 </div>
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/js-timepicker.css' %}">
+<script src="{% static 'core/js-timepicker.js' %}"></script>
+
+<script type="text/javascript">
+    window.picker = new JsTimepicker(document.querySelector('[id="id_time_start"]'), {
+      hourLeadingZero: true,
+      hourStep: 1,
+      minuteLeadingZero: true,
+      minuteStep: 6
+    });
+
+    window.picker = new JsTimepicker(document.querySelector('[id="id_time_end"]'), {
+      hourLeadingZero: true,
+      hourStep: 1,
+      minuteLeadingZero: true,
+      minuteStep: 6
+    });
+</script>
+
 {% endblock  %}
