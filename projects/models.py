@@ -8,7 +8,7 @@ from products.models import Product
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=100,)
+    title = models.CharField(max_length=100)
     comment = models.TextField(max_length=500, default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -28,7 +28,7 @@ class Project(models.Model):
 
 class ProductForProject(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Produkt")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produkt")
     quantity = models.IntegerField(default=0, verbose_name="Antal")
 
     def get_absolute_url(self):
