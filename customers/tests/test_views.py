@@ -7,7 +7,7 @@ from customers.models import Customer
 from users.models import Profile
 
 
-class TestViews(TestCase):
+class TestCustomerViews(TestCase):
 
     def setUp(self):
         self.client = Client()
@@ -21,15 +21,12 @@ class TestViews(TestCase):
         user_profile.company = self.company
         user_profile.save()
 
-
     def test_customer_create_POST(self):
         url = reverse('customer-create')
-
         self.client.post(url, {
             'title': 'customer',
             'comment': 'comment',
-            'web_address': 'https://customer.com/',
-            'company': self.company
+            'web_address': 'https://customer.com/'
         })
 
         customer = Customer.objects.get(pk=1)

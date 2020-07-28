@@ -1,8 +1,8 @@
+import logging
 import os
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 
@@ -33,20 +33,33 @@ class ProjectOverview(LoginRequiredMixin, ListView):
 
 class ProjectCreate(LoginRequiredMixin, CreateView):
     model = Project
-    template_name = os.path.join('projects', 'form.html')
     fields = ['title', 'state', 'customer', 'comment']
+    template_name = os.path.join('projects', 'form.html')
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         company = Profile.objects.get(user=self.request.user.id).company
         form.instance.company = company
-        return super().form_valid(form)
+        return super(ProjectCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         company = Profile.objects.get(user=self.request.user.id).company
         context = super().get_context_data(**kwargs)
         context['form_header'] = "Projekt - skapa"
         context['form'] = ProjectForm(company=company)
+        return context
+
+
+class ProjectUpdate(LoginRequiredMixin, UpdateView):
+    model = Project
+    fields = ['title', 'state', 'customer', 'comment']
+    template_name = os.path.join('projects', 'form.html')
+
+    def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
+        context = super().get_context_data(**kwargs)
+        context['form_header'] = "Projekt - ändra"
+        context['form'] = ProjectForm(company=company, instance=self.object)
         return context
 
 
@@ -90,17 +103,6 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
             'total_cost': total_cost,
             'currency': company.currency
         }
-
-
-class ProjectUpdate(LoginRequiredMixin, UpdateView):
-    model = Project
-    template_name = os.path.join('projects', 'form.html')
-    form_class = ProjectForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form_header'] = "Projekt - ändra"
-        return context
 
 
 class ProjectDelete(LoginRequiredMixin, DeleteView):

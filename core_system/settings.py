@@ -142,5 +142,3 @@ LOGIN_URL = 'login'
 if 'HEROKU' in os.environ:
     import django_heroku
     django_heroku.settings(locals())
-
-
