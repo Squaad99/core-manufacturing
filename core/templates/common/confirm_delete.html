@@ -20,6 +20,10 @@
                 {% with url_name|add:"-detail" as url_path %}
                     <a class="button" href="{% url url_path object_return_id %}">Avbryt</a>
                 {% endwith %}
+            {% elif tab %}
+                {% with url_name as url_path %}
+                    <a class="button" href="{% url url_path %}?tab={{ tab }}">Avbryt</a>
+                {% endwith %}
             {% else %}
                 {% with url_name as url_path %}
                     <a class="button" href="{% url url_path %}">Avbryt</a>

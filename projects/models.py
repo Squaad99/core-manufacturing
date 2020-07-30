@@ -16,8 +16,8 @@ class Project(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     # Specific
-    state = models.ForeignKey(ProjectState, on_delete=models.SET("Missing"))
-    customer = models.ForeignKey(Customer, on_delete=models.SET("Missing"))
+    state = models.ForeignKey(ProjectState, on_delete=models.SET(None))
+    customer = models.ForeignKey(Customer, on_delete=models.SET(None))
 
     def __str__(self):
         return self.title

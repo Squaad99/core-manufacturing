@@ -1,0 +1,31 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/list.css' %}">
+
+<h6 class="pt-5">Typ</h6>
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="85%">Titel</td>
+        <td width="15%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'company-project-type-create' %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for project_type in project_type_list %}
+    <tr class="border-bottom">
+        <td width="90%">{{ project_type.title }}</td>
+        <td width="10%" class="p-0">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="update-button" href="{% url 'company-project-type-update' project_type.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'company-project-type-delete' project_type.id %}">x</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
