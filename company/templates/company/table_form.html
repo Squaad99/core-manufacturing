@@ -7,7 +7,7 @@
     {% else %}
     <h3 class="d-inline">{{ header }} - Skapa</h3>
     {% endif %}
-    <a class="button float-right" href="{% url 'company-profile' %}">Tillbaka</a>
+    <a class="button float-right" href="{% url 'company-profile' %}?tab={{ tab }}">Tillbaka</a>
     <div class="border-top mt-3 mb-3"></div>
     <form method="POST">
         {% csrf_token %}

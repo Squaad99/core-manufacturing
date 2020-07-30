@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, CreateView, DeleteView, TemplateView
 
-from company.models import Employee, ProjectState
+from company.models import Employee, ProjectState, ProjectType
 from users.models import Company, Profile
 
 
@@ -20,6 +20,8 @@ class CompanyProfileView(LoginRequiredMixin, TemplateView):
         project_state_list = list(ProjectState.objects.filter(company=company))
         project_state_list.sort(key=lambda x: x.index_position)
         context['project_state_list'] = project_state_list
+        project_state_list = ProjectType.objects.filter(company=company)
+        context['project_type_list'] = project_state_list
         context['object'] = company
         context['id'] = company.id
         return context
@@ -99,6 +101,7 @@ class ProjectStateCreate(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Projekt stadie'
+        context['tab'] = '2'
         return context
 
 
@@ -110,6 +113,7 @@ class ProjectStateUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Projekt stadie'
+        context['tab'] = '2'
         return context
 
 
@@ -123,7 +127,8 @@ class ProjectStateDelete(LoginRequiredMixin, DeleteView):
         ctx = {
             'header': 'Projekt stadie',
             'url_name': 'company-profile',
-            'object_title': project_state.title
+            'object_title': project_state.title,
+            'tab': '2'
         }
         return ctx
 
@@ -131,3 +136,53 @@ class ProjectStateDelete(LoginRequiredMixin, DeleteView):
         project_state = ProjectState.objects.get(pk=kwargs['pk'])
         messages.info(self.request, 'Projekt stadie bortaget - ' + project_state.title)
         return super(ProjectStateDelete, self).delete(request, *args, **kwargs)
+
+
+class ProjectTypeCreate(LoginRequiredMixin, CreateView):
+    model = ProjectType
+    template_name = os.path.join("company", 'table_form.html')
+    fields = ['title']
+    success_url = "/company"
+
+    def form_valid(self, form):
+        form.instance.company = Profile.objects.get(user=self.request.user.id).company
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header'] = 'Projekt typ'
+        context['tab'] = '2'
+        return context
+
+
+class ProjectTypeUpdate(LoginRequiredMixin, UpdateView):
+    model = ProjectType
+    template_name = os.path.join("company", 'table_form.html')
+    fields = ['title']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header'] = 'Projekt typ'
+        context['tab'] = '2'
+        return context
+
+
+class ProjectTypeDelete(LoginRequiredMixin, DeleteView):
+    model = ProjectType
+    template_name = os.path.join('common', 'confirm_delete.html')
+    success_url = "/company"
+
+    def get_context_data(self, **kwargs):
+        project_type = ProjectType.objects.get(pk=self.kwargs['pk'])
+        ctx = {
+            'header': 'Projekt typ',
+            'url_name': 'company-profile',
+            'object_title': project_type.title,
+            'tab': '2'
+        }
+        return ctx
+
+    def delete(self, request, *args, **kwargs):
+        project_type = ProjectType.objects.get(pk=kwargs['pk'])
+        messages.info(self.request, 'Projekt typ bortaget - ' + project_type.title)
+        return super().delete(request, *args, **kwargs)

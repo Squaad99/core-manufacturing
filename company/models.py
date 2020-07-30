@@ -39,3 +39,15 @@ class ProjectState(models.Model):
     @staticmethod
     def get_absolute_url():
         return reverse('company-profile')
+
+
+class ProjectType(models.Model):
+    title = models.CharField(max_length=30)
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.title
+
+    @staticmethod
+    def get_absolute_url():
+        return reverse('company-profile')
