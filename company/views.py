@@ -88,11 +88,12 @@ class EmployeeDelete(LoginRequiredMixin, DeleteView):
         return super(EmployeeDelete, self).delete(request, *args, **kwargs)
 
 
+# Project
 class ProjectStateCreate(LoginRequiredMixin, CreateView):
     model = ProjectState
     template_name = os.path.join("company", 'table_form.html')
     fields = ['title', 'index_position', 'display_table']
-    success_url = "/company"
+    success_url = "/company/?tab=2"
 
     def form_valid(self, form):
         form.instance.company = Profile.objects.get(user=self.request.user.id).company
@@ -109,6 +110,8 @@ class ProjectStateUpdate(LoginRequiredMixin, UpdateView):
     model = ProjectState
     template_name = os.path.join("company", 'table_form.html')
     fields = ['title', 'index_position', 'display_table']
+    success_url = "/company/?tab=2"
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,7 +123,7 @@ class ProjectStateUpdate(LoginRequiredMixin, UpdateView):
 class ProjectStateDelete(LoginRequiredMixin, DeleteView):
     model = ProjectState
     template_name = os.path.join('common', 'confirm_delete.html')
-    success_url = "/company"
+    success_url = "/company/?tab=2"
 
     def get_context_data(self, **kwargs):
         project_state = ProjectState.objects.get(pk=self.kwargs['pk'])
@@ -142,7 +145,7 @@ class ProjectTypeCreate(LoginRequiredMixin, CreateView):
     model = ProjectType
     template_name = os.path.join("company", 'table_form.html')
     fields = ['title']
-    success_url = "/company"
+    success_url = "/company/?tab=2"
 
     def form_valid(self, form):
         form.instance.company = Profile.objects.get(user=self.request.user.id).company
@@ -159,6 +162,7 @@ class ProjectTypeUpdate(LoginRequiredMixin, UpdateView):
     model = ProjectType
     template_name = os.path.join("company", 'table_form.html')
     fields = ['title']
+    success_url = "/company/?tab=2"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,7 +174,7 @@ class ProjectTypeUpdate(LoginRequiredMixin, UpdateView):
 class ProjectTypeDelete(LoginRequiredMixin, DeleteView):
     model = ProjectType
     template_name = os.path.join('common', 'confirm_delete.html')
-    success_url = "/company"
+    success_url = "/company/?tab=2"
 
     def get_context_data(self, **kwargs):
         project_type = ProjectType.objects.get(pk=self.kwargs['pk'])
