@@ -1,0 +1,25 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
+
+<h6>Senaste händelser</h6>
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="25%">Typ</td>
+        <td width="35%">Titel</td>
+        <td width="15%">Av</td>
+        <td width="25%">Datum</td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table" style="height: 500px">
+    {% for event in events %}
+    <tr class="border-bottom">
+        <td width="10%">{{ event.type }}</td>
+        <td width="15%">{{ event.event }}</td>
+        <td width="35%"><a href="{% url event.url event.id %}">{{ event.name }}</a></td>
+        <td width="15%">{{ event.by.first_name }}</td>
+        <td width="25%">{{ event.date }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

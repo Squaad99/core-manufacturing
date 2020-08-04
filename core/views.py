@@ -14,15 +14,7 @@ class Home(LoginRequiredMixin, TemplateView):
         company = Profile.objects.get(user=self.request.user.id).company
         context = super().get_context_data(**kwargs)
 
-        get_most_recent_events(company)
-
-
-        events = [
-            'Projekt 1 uppdaterad 2',
-            'Projekt 1 skapad',
-            'Status 1 ändrad',
-        ]
-        context['events'] = events
+        context['events'] = get_most_recent_events(company)
 
         profile = Profile.objects.get(user=self.request.user.id)
         context['user_profile'] = profile
