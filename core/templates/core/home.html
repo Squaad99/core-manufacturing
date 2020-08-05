@@ -1,26 +1,20 @@
 {% extends "core/base.html" %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <div class="content-section">
+    <div class="row h-75">
+        <div class="col-4">
+            <div class="content-section h-100">
                 <h1>{{ user_profile.company.title }}</h1>
-                <div class="border-top mt-3 mb-3"></div>
-
-                <h4>Användare</h4>
+                <div class="border-top mt-1 mb-1"></div>
+                <h3>Användare</h3>
                 {% for profile in company_users %}
-                    <h5>{{ profile.user.first_name }} {{ profile.user.last_name }}</h5>
+                    <h6>{{ profile.user.first_name }} {{ profile.user.last_name }}</h6>
                 {% endfor %}
             </div>
         </div>
-        <div class="col-sm">
-            <div class="content-section">
-                <h1>Senaste händelser</h1>
-                <ul class="list-group" style="height:600px; overflow-y: scroll;">
-                    {% for event in events %}
-                        <li class="list-group-item">{{ event }}</li>
-                    {% endfor %}
-                </ul>
+        <div class="col-8">
+            <div class="content-section h-100">
+                {% include 'core/latest_events_table.html' %}
             </div>
         </div>
     </div>

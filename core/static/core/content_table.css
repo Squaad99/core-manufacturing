@@ -1,6 +1,6 @@
 .tbody-content-table {
     display:block;
-    height:100pt;
+    height: 100pt;
     overflow-y:auto;
     background-color: #f7f9fa;
 }
@@ -29,8 +29,10 @@ tfoot {
 
 table.content-table td {
     padding: 1px !important;
-    overflow: hidden;
     background-color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.content-table tr {
