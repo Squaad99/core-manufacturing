@@ -11,7 +11,8 @@ from django.views.generic import CreateView, DeleteView, UpdateView, TemplateVie
 from time_accounting.filters import TimeReportFilter
 from time_accounting.forms import TimeReportForm, TimeReportUpdateForm, WorkReportForm
 from time_accounting.models import TimeReport, WorkReport
-from time_accounting.utils import setup_calendar
+
+from time_accounting.utils import setup_calendar, calculate_hours, calculate_work_report_list
 from users.models import Profile
 
 
@@ -82,6 +83,9 @@ class TimeCalendarOverView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         company = Profile.objects.get(user=self.request.user.id).company
         calendar = setup_calendar(**kwargs)
+        first_date_of_month = calendar.selected_month.replace(day=1)
+        last_date_of_month = calendar.selected_month.replace(day=calendar.month_range[1])
+        work_report_list = list(WorkReport.objects.filter(company=company, date__range=[first_date_of_month, last_date_of_month]))
 
         return {
             'current_date': calendar.selected_month,
@@ -90,7 +94,8 @@ class TimeCalendarOverView(LoginRequiredMixin, TemplateView):
             'previous_month': calendar.previous_month,
             'next_name': calendar.next_month_date.strftime('%B').capitalize(),
             'next_month': calendar.next_month,
-            'week_rows': calendar.week_rows
+            'week_rows': calendar.week_rows,
+            'work_list_summary': calculate_work_report_list(work_report_list)
         }
 
 
@@ -104,10 +109,21 @@ class TimeCalendarDate(LoginRequiredMixin, TemplateView):
             divided = kwargs['selected_date'].split('-')
             selected_date = datetime.datetime(int(divided[0]), int(divided[1]), int(divided[2]))
 
+        previous_day = selected_date - datetime.timedelta(days=1)
+        next_day = selected_date + datetime.timedelta(days=1)
+
         ctx = super().get_context_data(**kwargs)
-        work_report_list = WorkReport.objects.filter(company=company, date=selected_date)
+        work_report_list = list(WorkReport.objects.filter(company=company, date=selected_date))
+
+        for report in work_report_list:
+            calculate_hours(report)
+
         ctx['work_report_list'] = work_report_list
+        ctx['previous_day'] = previous_day.date()
+        ctx['next_day'] = next_day.date()
         ctx['selected_date'] = selected_date.date()
+        ctx['selected_month'] = str(selected_date.year) + "-" + str(selected_date.month)
+        ctx['work_list_summary'] = calculate_work_report_list(work_report_list)
         return ctx
 
 
@@ -129,6 +145,43 @@ class WorkReportCreate(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_header'] = "Skapa - Arbetad tid"
+        context['button_name'] = "Skapa"
         return context
 
+
+class WorkReportUpdate(LoginRequiredMixin, UpdateView):
+    model = WorkReport
+    template_name = os.path.join('time_accounting', 'calendar', 'calendar_form.html')
+    form_class = WorkReportForm
+    success_url = "/time/calendar/overview/"
+
+    def form_valid(self, form):
+        if form.instance.time_start > form.instance.time_end:
+            messages.error(self.request, "Starttid måste vara tidigare än sluttid.", extra_tags=" alert-danger")
+            return super().form_invalid(form)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_header'] = "Ändra - Arbetad tid"
+        context['button_name'] = "Spara"
+        return context
+
+
+class WorkReportDelete(LoginRequiredMixin, DeleteView):
+    model = WorkReport
+    template_name = os.path.join('common', 'confirm_delete.html')
+    success_url = "/time/calendar/overview/"
+
+    def get_context_data(self, **kwargs):
+        ctx = {
+            'header': 'Arbetsrapport',
+            'url_name': 'time-calendar-overview',
+            'object_title': 'Arbetsrapport'
+        }
+        return ctx
+
+    def delete(self, request, *args, **kwargs):
+        messages.info(self.request, 'Arbetsrapport borttagen')
+        return super(WorkReportDelete, self).delete(request, *args, **kwargs)
 

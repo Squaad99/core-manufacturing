@@ -6,8 +6,10 @@ from datetime import datetime as dt
 
 class CalendarObject:
 
-    def __init__(self, selected_month, previous_month_date, previous_month, next_month_date, next_month, week_rows):
+    def __init__(self, selected_month, month_range, previous_month_date, previous_month, next_month_date, next_month,
+                 week_rows):
         self.selected_month = selected_month
+        self.month_range = month_range
         self.previous_month_date = previous_month_date
         self.previous_month = previous_month
         self.next_month_date = next_month_date
@@ -64,4 +66,33 @@ def setup_calendar(**kwargs):
     previous_month = str(previous_month_date.year) + "-" + str(previous_month_date.month)
     next_month = str(next_month_date.year) + "-" + str(next_month_date.month)
 
-    return CalendarObject(selected_month, previous_month_date, previous_month, next_month_date, next_month, week_rows)
+    return CalendarObject(selected_month, month_range, previous_month_date, previous_month, next_month_date, next_month,
+                          week_rows)
+
+
+def calculate_hours(workReport):
+    hour = workReport.time_end.hour - workReport.time_start.hour
+    minute = workReport.time_end.minute - workReport.time_start.minute
+    if minute < 0:
+        minute = (minute + 60)
+        hour -= 1
+    hour_percentage = (minute / 60)
+    workReport.worked_hours = hour + round(hour_percentage, 1)
+
+
+class WorkListSummary:
+    def __init__(self, length, total, employees):
+        self.length = length
+        self.total = total
+        self.employees = employees
+
+
+def calculate_work_report_list(work_report_list):
+    total_hours = 0
+    employees = []
+    for work_report in work_report_list:
+        calculate_hours(work_report)
+        total_hours += work_report.worked_hours
+        if work_report.employee not in employees:
+            employees.append(work_report.employee)
+    return WorkListSummary(len(work_report_list), round(total_hours, 2), employees)

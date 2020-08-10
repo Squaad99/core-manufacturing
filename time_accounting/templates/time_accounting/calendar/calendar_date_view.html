@@ -4,13 +4,17 @@
 
     <div class="row">
         <div class="col-8">
-            <div class="border" style="position: relative;">
-                {{ selected_date }}
+            <div class="border p-3 mb-2 text-center ">
+                <a href="{% url 'time-calendar-dateview' previous_day %}"><-</a>
+                  {{ selected_date }}
+                <a href="{% url 'time-calendar-dateview' next_day %}">-></a>
+                <a class="float-right" href="{% url 'time-calendar-overview' selected_month %}">Månad</a>
             </div>
-
             {% include 'time_accounting/calendar/date_table.html' %}
         </div>
         <div class="col-4">
+            <a href="{% url 'time-calendar-create' %}" class="button w-100">Ny tidrapport</a>
+            {% include 'time_accounting/calendar/work_report_list_data.html' %}
         </div>
     </div>
 </div>
