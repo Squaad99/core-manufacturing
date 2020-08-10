@@ -1,6 +1,6 @@
 from django.urls import path
 from time_accounting.views import TimeReportCreate, TimeReportUpdate, TimeReportDelete, TimeCalendarOverView, \
-    WorkReportCreate, TimeCalendarDate
+    WorkReportCreate, TimeCalendarDate, WorkReportUpdate, WorkReportDelete
 
 urlpatterns = [
     path('', TimeReportCreate.as_view(), name='time-overview'),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('calendar/overview/<str:selected_month>/', TimeCalendarOverView.as_view(), name='time-calendar-overview'),
     path('calendar/dateview/<str:selected_date>/', TimeCalendarDate.as_view(), name='time-calendar-dateview'),
     path('calendar/new/', WorkReportCreate.as_view(), name='time-calendar-create'),
-    path('calendar/update/<str:pk>', WorkReportCreate.as_view(), name='time-calendar-update'),
+    path('calendar/update/<str:pk>', WorkReportUpdate.as_view(), name='time-calendar-update'),
+    path('calendar/delete/<str:pk>', WorkReportDelete.as_view(), name='time-calendar-delete'),
 ]

@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/data_table.css' %}">
+
+<table class="w-100 mt-4">
+    <tr class="table-row">
+        <td class="td-label p-2">Rapporter</td>
+        <td class="td-value p-2">{{ work_list_summary.length }}</td>
+    </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Timmar</td>
+        <td class="td-value p-2">{{ work_list_summary.total }}</td>
+    </tr>
+    <tr class="table-row">
+        <td class="td-label p-2">Anställda</td>
+        <td class="td-value p-2">
+            {% for employee in work_list_summary.employees %}
+                {{ employee }}
+            {% endfor %}
+        </td>
+    </tr>
+</table>

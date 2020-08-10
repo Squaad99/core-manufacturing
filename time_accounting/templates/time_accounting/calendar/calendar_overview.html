@@ -5,8 +5,11 @@
         <div class="col-8">
             {% include 'time_accounting/calendar/calendar.html' %}
         </div>
-        <div class="col-4">
-            <a href="{% url 'time-calendar-create' %}" class="button">Ny</a>
+        <div class="col-4 justify-content-center">
+            <div>
+                <a href="{% url 'time-calendar-create' %}" class="button w-100">Ny tidrapport</a>
+                {% include 'time_accounting/calendar/work_report_list_data.html' %}
+            </div>
         </div>
     </div>
 </div>

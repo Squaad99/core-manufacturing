@@ -4,19 +4,32 @@
 <table class="content-table">
     <thead>
     <tr>
-        <td width="25%">Anställd</td>
-        <td width="25%">Datum</td>
-        <td width="25%">Starttid</td>
-        <td width="25%">Sluttid</td>
+        <td width="19%">Anställd</td>
+        <td width="19%">Datum</td>
+        <td width="19%">Starttid</td>
+        <td width="19%">Sluttid</td>
+        <td width="19%">Timmar</td>
+        <td width="7%"></td>
     </tr>
     </thead>
     <tbody class="tbody-content-table" style="height:400pt;">
     {% for work_report in work_report_list %}
     <tr class="border-bottom">
-        <td width="25%">{{ work_report.employee }}</td>
-        <td width="25%">{{ work_report.date }}</td>
-        <td width="25%">{{ work_report.time_start }}</td>
-        <td width="25%">{{ work_report.time_end }}</td>
+        <td width="20%">{{ work_report.employee }}</td>
+        <td width="20%">{{ work_report.date }}</td>
+        <td width="20%">{{ work_report.time_start }}</td>
+        <td width="20%">{{ work_report.time_end }}</td>
+        <td width="20%">{{ work_report.worked_hours }}</td>
+        <td width="55px">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="update-button" href="{% url 'time-calendar-update' work_report.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'time-calendar-delete' work_report.id %}">x</a>
+                </div>
+            </div>
+        </td>
     </tr>
     {% endfor %}
     </tbody>

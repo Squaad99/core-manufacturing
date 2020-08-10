@@ -1,0 +1,47 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'core/content_table.css' %}">
+
+<h6 class="mt-2">Arbets kategorier</h6>
+<table class="content-table">
+    <thead>
+    <tr>
+        <td width="60%">Titel</td>
+        <td width="15%">Kod</td>
+        <td width="15%">Kostnad</td>
+        <td width="10%" class="p-0 bg-success">
+            <a class="add-button" href="{% url 'company-work-type-create' %}">+</a>
+        </td>
+    </tr>
+    </thead>
+    <tbody class="tbody-content-table">
+    {% for work_type in work_type_list %}
+    <tr class="border-bottom">
+        <td width="60%">{{ work_type.title }}</td>
+        <td width="15%">
+            {% if work_type.work_type_id %}
+            {{ work_type.work_type_id }}
+            {% else %}
+            -
+            {% endif %}
+        </td>
+        <td width="15%">
+            {% if work_type.cost %}
+            {{ work_type.cost }}
+            {% else %}
+            -
+            {% endif %}
+        </td>
+        <td width="10%" class="p-0">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="update-button" href="{% url 'company-work-type-update' work_type.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'company-work-type-delete' work_type.id %}">x</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,7 +1,8 @@
 from django.urls import path
 
 from company.views import CompanyProfileView, CompanyUpdate, EmployeeDelete, EmployeeUpdate, EmployeeCreate, \
-    ProjectStateCreate, ProjectStateUpdate, ProjectStateDelete, ProjectTypeCreate, ProjectTypeUpdate, ProjectTypeDelete
+    ProjectStateCreate, ProjectStateUpdate, ProjectStateDelete, ProjectTypeCreate, ProjectTypeUpdate, ProjectTypeDelete, \
+    WorkTypeCreate, WorkTypeUpdate, WorkTypeDelete
 
 urlpatterns = [
     path('', CompanyProfileView.as_view(), name='company-profile'),
@@ -19,4 +20,8 @@ urlpatterns = [
     path('project-type/create/', ProjectTypeCreate.as_view(), name='company-project-type-create'),
     path('project-type/<int:pk>/update/', ProjectTypeUpdate.as_view(), name='company-project-type-update'),
     path('project-type/<int:pk>/delete/', ProjectTypeDelete.as_view(), name='company-project-type-delete'),
+    # Work type
+    path('work-type/create/', WorkTypeCreate.as_view(), name='company-work-type-create'),
+    path('work-type/<int:pk>/update/', WorkTypeUpdate.as_view(), name='company-work-type-update'),
+    path('work-type/<int:pk>/delete/', WorkTypeDelete.as_view(), name='company-work-type-delete'),
 ]

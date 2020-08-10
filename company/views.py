@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, CreateView, DeleteView, TemplateView
 
-from company.models import Employee, ProjectState, ProjectType
+from company.models import Employee, ProjectState, ProjectType, WorkType
 from users.models import Company, Profile
 
 
@@ -22,6 +22,8 @@ class CompanyProfileView(LoginRequiredMixin, TemplateView):
         context['project_state_list'] = project_state_list
         project_state_list = ProjectType.objects.filter(company=company)
         context['project_type_list'] = project_state_list
+        work_type_list = WorkType.objects.filter(company=company)
+        context['work_type_list'] = work_type_list
         context['object'] = company
         context['id'] = company.id
         return context
@@ -189,4 +191,56 @@ class ProjectTypeDelete(LoginRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         project_type = ProjectType.objects.get(pk=kwargs['pk'])
         messages.info(self.request, 'Projekt typ bortaget - ' + project_type.title)
+        return super().delete(request, *args, **kwargs)
+
+
+# Time
+class WorkTypeCreate(LoginRequiredMixin, CreateView):
+    model = WorkType
+    template_name = os.path.join("company", 'table_form.html')
+    fields = ['title', 'work_type_id', 'cost']
+    success_url = "/company/?tab=1"
+
+    def form_valid(self, form):
+        form.instance.company = Profile.objects.get(user=self.request.user.id).company
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header'] = 'Arbets kategori'
+        context['tab'] = '1'
+        return context
+
+
+class WorkTypeUpdate(LoginRequiredMixin, UpdateView):
+    model = WorkType
+    template_name = os.path.join("company", 'table_form.html')
+    fields = ['title', 'work_type_id', 'cost']
+    success_url = "/company/?tab=1"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header'] = 'Projekt typ'
+        context['tab'] = '1'
+        return context
+
+
+class WorkTypeDelete(LoginRequiredMixin, DeleteView):
+    model = WorkType
+    template_name = os.path.join('common', 'confirm_delete.html')
+    success_url = "/company/?tab=2"
+
+    def get_context_data(self, **kwargs):
+        work_type = WorkType.objects.get(pk=self.kwargs['pk'])
+        ctx = {
+            'header': 'Projekt typ',
+            'url_name': 'company-profile',
+            'object_title': work_type.title,
+            'tab': '1'
+        }
+        return ctx
+
+    def delete(self, request, *args, **kwargs):
+        work_type = WorkType.objects.get(pk=kwargs['pk'])
+        messages.info(self.request, 'Arbets kategori bortaget - ' + work_type.title)
         return super().delete(request, *args, **kwargs)

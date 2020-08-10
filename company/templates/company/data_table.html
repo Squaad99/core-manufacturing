@@ -1,7 +1,10 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'core/data_table.css' %}">
 
-<table class="mb-4">
+
+<a class="button float-right" href="{% url 'company-profile-update' %}">Ändra</a>
+
+<table class="mb-4 d-block">
     <tr class="table-row">
         <td class="td-label p-2">Valuta</td>
         <td class="td-value p-2">{{ company.currency }}</td>
