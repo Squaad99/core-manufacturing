@@ -20,6 +20,7 @@ class MaterialOverview(LoginRequiredMixin, ListView):
         company = Profile.objects.get(user=self.request.user.id).company
         object_list = Material.objects.filter(company=company)
         ctx['object_list'] = object_list
+        ctx['amount'] = len(list(object_list))
         return ctx
 
 

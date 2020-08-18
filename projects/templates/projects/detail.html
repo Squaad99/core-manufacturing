@@ -13,8 +13,8 @@
     </div>
     <div class="row border-top pt-3" style="bottom:0;">
         <label class="mr-3">Kostnad: {{ total_cost }} {{ currency }}</label>
-        <label class="mr-3">Materialkostnad: {{total_material_cost}} {{ currency }}</label>
-        <label class="mr-3">Arbetskostnad: {{total_work_cost}} {{ currency }}/ Arbetstimmar {{ total_work_hours }}</label>
+        <label class="mr-3">Materialkostnad: {{ all_products_material_cost }} {{ currency }}</label>
+        <label class="mr-3">Arbetskostnad: {{ all_products_work_cost }} {{ currency }}/ Arbetstimmar {{ all_products_work_hours }}</label>
     </div>
 </div>
 {% endblock content %}

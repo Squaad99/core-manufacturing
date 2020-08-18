@@ -1,11 +1,11 @@
 import os
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from products.forms import MaterialForProductForm, WorkTaskForm
-from products.models import Product, MaterialForProduct, WorkTask
-from products.utils import calculate_product_cost
+from products.models import Product, MaterialForProduct, WorkTaskForProduct
+from products.utils import calculate_product_summary
 from users.models import Profile
 
 
@@ -16,7 +16,7 @@ class ProductOverview(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['header'] = 'Produkt'
+        context['header'] = 'Produkter'
         context['url_name'] = 'product'
         user_profile = Profile.objects.get(user=self.request.user.id)
         object_list = Product.objects.filter(company=user_profile.company)
@@ -26,7 +26,7 @@ class ProductOverview(LoginRequiredMixin, ListView):
 
 class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ['title', 'extra_cost', 'comment']
+    fields = ['title', 'specification', 'comment']
     template_name = os.path.join('products', 'form.html')
 
     def form_valid(self, form):
@@ -41,28 +41,28 @@ class ProductCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class ProductDetail(LoginRequiredMixin, DetailView):
+class ProductDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Product
     template_name = os.path.join('products', 'detail.html')
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
+    def has_permission(self):
         company = Profile.objects.get(user=self.request.user.id).company
-        ctx['currency'] = company.currency
-        materials = MaterialForProduct.objects.filter(product=self.object)
-        ctx['material_list'] = materials
+        detail_object = self.get_object()
+        if company == detail_object.company:
+            return True
+        return False
 
-        work_tasks = WorkTask.objects.filter(product=self.object)
-        ctx['work_task_list'] = work_tasks
-
-        ctx['total_material_cost'], ctx['work_tasks_hours'], ctx['work_cost'], ctx['total_cost']= \
-            calculate_product_cost(materials, work_tasks, company, self.object)
+    def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
+        ctx = super().get_context_data(**kwargs)
+        ctx['product_summary'] = calculate_product_summary(self.object)
+        ctx['company'] = company
         return ctx
 
 
 class ProductUpdate(LoginRequiredMixin, UpdateView):
     model = Product
-    fields = ['title', 'extra_cost', 'comment']
+    fields = ['title', 'specification', 'comment']
     template_name = os.path.join('products', 'form.html')
 
     def get_context_data(self, **kwargs):
@@ -94,18 +94,37 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
 # Material
 class MaterialForProductCreate(LoginRequiredMixin, CreateView):
     model = MaterialForProduct
-    form_class = MaterialForProductForm
+    fields = ['material', 'units']
     template_name = os.path.join('products', 'form.html')
 
     def form_valid(self, form):
-        form.instance.product = Product.objects.get(pk=self.kwargs['product_id'])
+        company = Profile.objects.get(user=self.request.user.id).company
+        form.instance.product = Product.objects.get(pk=self.kwargs['pk'])
+        if not company == form.instance.material.company:
+            return super().form_invalid(form)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
         context = super().get_context_data(**kwargs)
-        main_object = Product.objects.get(pk=self.kwargs['product_id'])
+        main_object = Product.objects.get(pk=self.kwargs['pk'])
         context['object'] = main_object
         context['form_header'] = "Lägg till material"
+        context['form'] = MaterialForProductForm(company=company)
+        return context
+
+
+class MaterialForProductUpdate(LoginRequiredMixin, UpdateView):
+    model = MaterialForProduct
+    fields = ['material', 'units']
+    template_name = os.path.join('products', 'form.html')
+
+    def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
+        context = super().get_context_data(**kwargs)
+        context['form_header'] = "Material för produkt - ändra"
+        context['object'] = self.object.product
+        context['form'] = MaterialForProductForm(company=company, instance=self.object)
         return context
 
 
@@ -134,39 +153,64 @@ class MaterialForProductDelete(LoginRequiredMixin, DeleteView):
 
 # Work Task
 class WorkTaskCreate(LoginRequiredMixin, CreateView):
-    model = WorkTask
-    form_class = WorkTaskForm
+    model = WorkTaskForProduct
+    fields = ['work_type', 'work_hours']
     template_name = os.path.join('products', 'form.html')
 
     def form_valid(self, form):
-        form.instance.product = Product.objects.get(pk=self.kwargs['product_id'])
+        product = Product.objects.get(pk=self.kwargs['product_id'])
+        form.instance.product = product
+        if not product.company == form.instance.work_type.company:
+            return super().form_invalid(form)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
         context = super().get_context_data(**kwargs)
         main_object = Product.objects.get(pk=self.kwargs['product_id'])
         context['object'] = main_object
         context['form_header'] = "Lägg till arbete"
+        context['form'] = WorkTaskForm(company=company)
+        return context
+
+
+class WorkTaskUpdate(LoginRequiredMixin, UpdateView):
+    model = WorkTaskForProduct
+    fields = ['work_type', 'work_hours']
+    template_name = os.path.join('products', 'form.html')
+
+    def form_valid(self, form):
+        company = Profile.objects.get(user=self.request.user.id).company
+        if not company == form.instance.material.company:
+            return super().form_invalid(form)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        company = Profile.objects.get(user=self.request.user.id).company
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.object.product
+        context['form_header'] = "Arbete för produkt - ändra"
+        context['form'] = WorkTaskForm(company=company, instance=self.object)
         return context
 
 
 class WorkTaskDelete(LoginRequiredMixin, DeleteView):
-    model = WorkTask
+    model = WorkTaskForProduct
     template_name = os.path.join('common', 'confirm_delete.html')
 
     def get_success_url(self):
         return reverse('product-detail', kwargs={'pk': self.object.product.id})
 
     def delete(self, request, *args, **kwargs):
-        work_task = WorkTask.objects.get(pk=kwargs['pk'])
-        messages.info(self.request, 'Arbete bortaget - ' + work_task.title)
+        work = WorkTaskForProduct.objects.get(pk=kwargs['pk'])
+        messages.info(self.request, 'Arbete bortaget - ' + work.work_type.title)
         return super(WorkTaskDelete, self).delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = {
             'header': 'Arbete för produkt',
             'url_name': 'product',
-            'object_title': self.object.title,
+            'object_title': self.object.work_type,
             'object_return_id': self.object.product.id
         }
         return ctx

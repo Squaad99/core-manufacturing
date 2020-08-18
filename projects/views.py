@@ -7,10 +7,11 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 
 from company.models import ProjectState
-from products.models import MaterialForProduct, WorkTask
-from products.utils import calculate_product_cost
+from products.models import MaterialForProduct, WorkTaskForProduct
+from products.utils import calculate_product_summary
 from projects.form import ProjectForm
 from projects.models import Project, ProductForProject
+from projects.utils import calculate_project
 from users.models import Profile
 
 
@@ -67,40 +68,43 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
     model = Project
     template_name = os.path.join('projects', 'detail.html')
 
+    def has_permission(self):
+        company = Profile.objects.get(user=self.request.user.id).company
+        detail_object = self.get_object()
+        if company == detail_object.company:
+            return True
+        return False
+
     def get_context_data(self, **kwargs):
         company = Profile.objects.get(user=self.request.user.id).company
-        product_list = ProductForProject.objects.filter(project=self.object)
+        product_for_project_list = ProductForProject.objects.filter(project=self.object)
         calculate_products = []
-        total_material_cost = 0
-        total_work_hours = 0
-        for product in product_list:
-            materials = MaterialForProduct.objects.filter(product=product.product)
-            work_tasks = WorkTask.objects.filter(product=product.product)
-            cost_response = calculate_product_cost(materials, work_tasks, company, product.product)
-            cost = (cost_response[0] * product.quantity)
-            total_material_cost += cost
-            work_hours = (cost_response[1] * product.quantity)
-            total_work_hours += work_hours
+        all_products_material_cost = 0
+        all_products_work_cost = 0
+        all_products_work_hours = 0
+        for product_for_project in product_for_project_list:
+            product_summary = calculate_product_summary(product_for_project.product)
+            quantity = product_for_project.quantity
+            all_products_material_cost += (product_summary.material_cost * quantity)
+            all_products_work_cost += (product_summary.work_cost * quantity)
+            all_products_work_hours += (product_summary.work_hours * quantity)
             calculate_products.append(
                 {
-                    'title': product.product.title,
-                    'cost': cost,
-                    'work_hours': total_work_hours,
-                    'quantity': product.quantity,
-                    'id': product.id
+                    'title': product_for_project.product.title,
+                    'cost': (product_summary.total_cost * quantity),
+                    'work_hours': (product_summary.work_hours * quantity),
+                    'quantity': quantity,
+                    'id': product_for_project.id
                 }
             )
-
-        total_work_cost = (total_work_hours * company.cost_per_work_hour)
-        total_cost = total_material_cost + total_work_cost
 
         return {
             'product_list': calculate_products,
             'object': self.object,
-            'total_material_cost': total_material_cost,
-            'total_work_hours': total_work_hours,
-            'total_work_cost': total_work_cost,
-            'total_cost': total_cost,
+            'all_products_material_cost': all_products_material_cost,
+            'all_products_work_cost': all_products_work_cost,
+            'all_products_work_hours': all_products_work_hours,
+            'total_cost': (all_products_material_cost + all_products_work_cost),
             'currency': company.currency
         }
 
@@ -180,8 +184,13 @@ class ProjektBoard(LoginRequiredMixin, TemplateView):
         for project_state in project_states:
             if project_state.display_table:
                 total_work_hours = 0
-                projects = Project.objects.filter(company=company, state=project_state)
-                project_state_list.append([project_state, projects, total_work_hours])
+                projects = list(Project.objects.filter(company=company, state=project_state))
+                for project in projects:
+                    project_summary = calculate_project(project)
+                    total_work_hours += project_summary.total_hours
+                    project.summary = project_summary
+
+                project_state_list.append([project_state, projects, len(projects), total_work_hours])
 
         context['states'] = project_state_list
         return context

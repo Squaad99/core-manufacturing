@@ -6,27 +6,34 @@
     <thead>
     <tr>
         <td width="55%">Titel</td>
-        <td width="35%">Antal timmar</td>
-        <td width="5%" class="p-0 bg-success">
+        <td width="45%">Antal timmar</td>
+        <td width="55px" class="p-0 bg-success">
             <a class="add-button" href="{% url 'work-task-add' object.id %}">+</a>
         </td>
     </tr>
     </thead>
     <tbody class="tbody-content-table">
-    {% for work_task in work_task_list %}
+    {% for work in product_summary.work_tasks %}
     <tr class="border-bottom">
-        <td width="55%">{{ work_task.title }}</td>
-        <td width="35%">{{ work_task.work_hours }}</td>
-        <td width="5%" class="p-0 bg-danger">
-            <a class="delete-button" href="{% url 'work-task-delete' work_task.id %}">x</a>
+        <td width="55%">{{ work.work_type }}</td>
+        <td width="45%">{{ work.work_hours }}</td>
+        <td width="55px">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="delete-button" href="{% url 'work-task-update' work.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'work-task-delete' work.id %}">x</a>
+                </div>
+            </div>
         </td>
     </tr>
     {% endfor %}
     </tbody>
     <tfoot>
         <tr>
-            <td>Arbetstimmar: {{ work_tasks_hours }}</td>
-            <td>Arbetskostnad: {{ work_cost }}  {{ currency }}</td>
+            <td>Arbetstimmar: {{ product_summary.work_hours }}</td>
+            <td>Arbetskostnad: {{ product_summary.work_cost }}  {{ company.currency }}</td>
         </tr>
     </tfoot>
 </table>
