@@ -5,19 +5,19 @@
 <table class="content-table">
     <thead>
     <tr>
-        <td width="40%">Titel</td>
+        <td width="30%">Titel</td>
         <td width="15%">Kostnad</td>
         <td width="20%">Enhet</td>
         <td width="15%">Antal</td>
-        <td width="5%" class="p-0 bg-success">
+        <td width="55px" class="p-0 bg-success">
             <a class="add-button" href="{% url 'material-for-product-add' object.id %}">+</a>
         </td>
     </tr>
     </thead>
     <tbody class="tbody-content-table">
-    {% for material in material_list %}
+    {% for material in product_summary.materials %}
     <tr class="border-bottom">
-        <td width="40%">{{ material.material.title }}</td>
+        <td width="30%">{{ material.material.title }}</td>
         <td width="15%">{{ material.material.base_cost }}</td>
         {% if material.material.scalable_cost %}
         <td width="20%">{{ material.material.unit_label }} - {{ material.material.unit_cost }}</td>
@@ -26,15 +26,22 @@
         <td width="20%">-</td>
         <td width="15%">-</td>
         {% endif %}
-        <td width="5%" class="p-0 bg-danger">
-            <a class="delete-button" href="{% url 'material-for-product-delete' material.id %}">x</a>
+        <td width="55px">
+            <div class="row">
+                <div class="col bg-warning">
+                    <a class="delete-button" href="{% url 'material-for-product-update' material.id %}">u</a>
+                </div>
+                <div class="col bg-danger">
+                    <a class="delete-button" href="{% url 'material-for-product-delete' material.id %}">x</a>
+                </div>
+            </div>
         </td>
     </tr>
     {% endfor %}
     </tbody>
     <tfoot style="display: block">
         <tr>
-            <td>Materialkostnad: {{ total_material_cost }} {{ currency }}</td>
+            <td>Materialkostnad: {{ product_summary.material_cost }} {{ company.currency }}</td>
         </tr>
     </tfoot>
 </table>

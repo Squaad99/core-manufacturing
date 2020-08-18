@@ -1,26 +1,26 @@
 {% extends "core/base.html" %}
 {% block content %}
 
-<script>
-function allowDrop(ev) {
-    if (ev.target.classList.value.includes("project-list")) {
-        ev.preventDefault();
-    }
-}
+<!--<script>-->
+<!--function allowDrop(ev) {-->
+<!--    if (ev.target.classList.value.includes("project-list")) {-->
+<!--        ev.preventDefault();-->
+<!--    }-->
+<!--}-->
 
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
-}
+<!--function drag(ev) {-->
+<!--  ev.dataTransfer.setData("text", ev.target.id);-->
+<!--}-->
 
-function drop(ev) {
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  console.log("ddwda")
-  var testDd = document.getElementById(data);
-  console.log(ev);
-  ev.target.appendChild(document.getElementById(data));
-}
-</script>
+<!--function drop(ev) {-->
+<!--  ev.preventDefault();-->
+<!--  var data = ev.dataTransfer.getData("text");-->
+<!--  console.log("ddwda")-->
+<!--  var testDd = document.getElementById(data);-->
+<!--  console.log(ev);-->
+<!--  ev.target.appendChild(document.getElementById(data));-->
+<!--}-->
+<!--</script>-->
 
 <style>
 .project-list {
@@ -28,34 +28,35 @@ function drop(ev) {
 }
 .project-item {
     padding: 6px;
-    height: 70px;
 }
+
+
 </style>
 
 <div class="content-container">
-    <div class="row h-100">
+    <div class="row h-75">
         {% for state in states %}
-        <div class="col m-1 p-1">
-            <div class="row h-75">
-                <div class="col">
-                    <h6>{{ state.0.title }}</h6>
-                    <div class="project-list border" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for project in state.1 %}
-                        <div class="project-item border-bottom" draggable="true" ondragstart="drag(event)"
-                             id="{{ project.id }}">
-                            <a href="{% url 'project-detail' project.id %}">{{ project.title }}</a>
-                            <label class="d-block">Arbetstimmar: 0</label>
-                        </div>
-                        {% endfor %}
+        <div class="col pt-2">
+            <h6 class="d-block">{{ state.0.title }}</h6>
+            <div style="position: absolute; height: 90%; overflow-y: auto;" class="w-100 border">
+                <ul style="list-style-type: none; padding: 0;">
+                    {% for project in state.1 %}
+                    <div class="project-item border-bottom" id="{{ project.id }}">
+                        <a href="{% url 'project-detail' project.id %}">{{ project.title }}</a>
+                        <label class="float-right">{{ project.created_by.first_name }} {{ project.created_by.last_name }}</label>
+                        <label class="d-block">Arbetstimmar: {{ project.summary.total_hours }}</label>
                     </div>
-                </div>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="row h-25 mt-5">
-                <div class="col">
-                    <label class="d-block">Antal: {{ state.1.count  }}</label>
-                    <label>Totala Arbetstimmar: {{ state.2 }}</label>
-                </div>
-            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row h-25">
+        {% for state in states %}
+        <div class="col">
+            <label class="d-block">Antal: {{ state.2 }}</label>
+            <label>Totala Arbetstimmar: {{ state.3 }}</label>
         </div>
         {% endfor %}
     </div>

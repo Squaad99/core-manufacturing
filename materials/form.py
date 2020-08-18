@@ -10,7 +10,7 @@ class MaterialForm(forms.ModelForm):
     scalable_cost = forms.BooleanField(initial=True, label='Skalbar kostnad (Enheter)', widget=forms.CheckboxInput(attrs={'id': 'scalable_cost_box'}), required=False)
     unit_label = forms.CharField(label='Enhetsnamn ', widget=forms.TextInput(attrs={'placeholder': 'Enhetsnamn', 'class': 'scalable_input'}), required=False)
     unit_cost = forms.FloatField(label='Kostnad per enhet ', initial=0, widget=forms.NumberInput(attrs={'placeholder': 'Kostnad per enhet', 'class': 'scalable_input'}))
-    comment = forms.CharField(label='Kommentar', widget=forms.Textarea(attrs={'rows': 3}), required=False)
+    comment = forms.CharField(label='Anteckning', widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
     class Meta:
         model = Material

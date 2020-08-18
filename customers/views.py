@@ -1,7 +1,7 @@
 import os
 from django.urls import reverse
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import ListView, CreateView, DetailView
 from customers.models import Customer, ContactPerson
@@ -19,8 +19,8 @@ class Overview(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['header'] = 'Kunder'
         context['url_name'] = 'customer'
-        user_profile = Profile.objects.get(user=self.request.user.id)
-        object_list = Customer.objects.filter(company=user_profile.company)
+        company = Profile.objects.get(user=self.request.user.id).company
+        object_list = Customer.objects.filter(company=company)
         context['object_list'] = object_list
         context['amount'] = len(list(object_list))
         return context
@@ -38,10 +38,17 @@ class Create(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class Detail(LoginRequiredMixin, DetailView):
+class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Customer
     contacts = ContactPerson.objects.filter()
     template_name = os.path.join('customers', 'detail.html')
+
+    def has_permission(self):
+        company = Profile.objects.get(user=self.request.user.id).company
+        detail_object = self.get_object()
+        if company == detail_object.company:
+            return True
+        return False
 
     def get_context_data(self, **kwargs):
         contacts = ContactPerson.objects.filter(customer=self.object)
@@ -96,6 +103,12 @@ class ContactPersonCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.customer = Customer.objects.get(pk=self.kwargs['customer_id'])
         return super().form_valid(form)
+
+
+class ContactPersonUpdate(LoginRequiredMixin, UpdateView):
+    model = ContactPerson
+    fields = ['name', 'phone', 'email']
+    template_name = os.path.join('customers', 'form.html')
 
 
 class ContactPersonDelete(LoginRequiredMixin, DeleteView):
